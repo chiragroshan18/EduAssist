@@ -39,8 +39,8 @@ INTENT_PATTERNS = {
     },
     "exam_preparation": {
         "label": "Exam Preparation",
-        "keywords": ["exam", "exams", "examination", "midterm", "midterms", "finals", "test", "tests", "quiz", "revision", "revise", "scoring", "marks", "paper", "papers", "syllabus", "question"],
-        "phrases": ["exam preparation", "prepare for exam", "prepare for exams", "upcoming exam", "study for exam", "past papers", "revision strategy", "exam tips", "midterm exam", "final exam"],
+        "keywords": ["exam", "exams", "examination", "examinations", "prepare", "preparation", "midterm", "midterms", "finals", "test", "tests", "quiz", "revision", "revise", "scoring", "marks", "paper", "papers", "syllabus", "question"],
+        "phrases": ["exam preparation", "prepare for exam", "prepare for exams", "prepare for my exam", "prepare for my examinations", "prepare for examination", "upcoming exam", "study for exam", "past papers", "revision strategy", "exam tips", "midterm exam", "final exam"],
         "weight": 1.0
     },
     "study_planning": {
