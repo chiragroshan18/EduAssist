@@ -14,7 +14,7 @@ class SessionState:
     """Thread-safe in-memory session manager for EduAssist."""
 
     def __init__(self):
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self.reset()
 
     def reset(self):
@@ -138,13 +138,16 @@ class SessionState:
             self.session_started = time.time()
             self.active_context = {}
 
-    def restore_backup(self) -> bool:
-        """Restore previously cleared conversation dialogue and analytics from backup."""
+    def restore_backup(self, fallback_to_demo: bool = True) -> bool:
+        """Restore previously cleared conversation dialogue and analytics from backup, or fall back to demo."""
         with self._lock:
             if hasattr(self, 'backup_conversation') and self.backup_conversation:
                 self.conversation = list(self.backup_conversation)
                 self.intent_counts = dict(self.backup_intent_counts)
                 self.tone_counts = dict(self.backup_tone_counts)
+                return True
+            if fallback_to_demo:
+                self.load_demo()
                 return True
             return False
 

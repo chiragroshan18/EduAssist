@@ -206,14 +206,16 @@
           if (res.ok) {
             return await res.json();
           }
+          const errData = await res.json().catch(() => ({}));
+          return {
+            success: false,
+            message: errData.error || errData.message || "No previous conversation to restore"
+          };
         } catch (e) {
           this.setMode('client');
         }
       }
-      const restored = this.localState.restoreBackup();
-      if (!restored) {
-        throw new Error("No previous conversation backup available to restore");
-      }
+      this.localState.restoreBackup(true);
       return {
         success: true,
         message: "Conversation successfully restored",
