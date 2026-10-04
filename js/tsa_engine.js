@@ -125,6 +125,18 @@
     "Algorithms", "Computer Organization", "Object Oriented Programming"
   ];
 
+  function getSafeStorage() {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return window.localStorage;
+      }
+      if (typeof localStorage !== 'undefined') {
+        return localStorage;
+      }
+    } catch (e) {}
+    return null;
+  }
+
   // ============================================================================
   // Text Preprocessing
   // ============================================================================
@@ -484,37 +496,39 @@
 
     saveToStorage() {
       try {
-        const payload = {
-          conversation: this.conversation,
-          intentCounts: this.intentCounts,
-          toneCounts: this.toneCounts,
-          sessionStarted: this.sessionStarted,
-          sessionStartIso: this.sessionStartIso
-        };
-        localStorage.setItem(this.storageKey, JSON.stringify(payload));
-      } catch (e) {
-        // localStorage unavailable in some sandboxes
-      }
+        const storage = getSafeStorage();
+        if (storage) {
+          const payload = {
+            conversation: this.conversation,
+            intentCounts: this.intentCounts,
+            toneCounts: this.toneCounts,
+            sessionStarted: this.sessionStarted,
+            sessionStartIso: this.sessionStartIso
+          };
+          storage.setItem(this.storageKey, JSON.stringify(payload));
+        }
+      } catch (e) {}
     }
 
     loadFromStorage() {
       try {
-        const raw = localStorage.getItem(this.storageKey);
-        if (raw) {
-          const data = JSON.parse(raw);
-          if (data && Array.isArray(data.conversation)) {
-            this.conversation = data.conversation;
-            this.intentCounts = data.intentCounts || {};
-            this.toneCounts = data.toneCounts || { positive: 0, neutral: 0, concerned: 0, frustrated: 0 };
-            this.sessionStarted = data.sessionStarted || Date.now();
-            this.sessionStartIso = data.sessionStartIso || new Date().toISOString();
-            this.activeContext = null;
-            return true;
+        const storage = getSafeStorage();
+        if (storage) {
+          const raw = storage.getItem(this.storageKey);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data && Array.isArray(data.conversation)) {
+              this.conversation = data.conversation;
+              this.intentCounts = data.intentCounts || {};
+              this.toneCounts = data.toneCounts || { positive: 0, neutral: 0, concerned: 0, frustrated: 0 };
+              this.sessionStarted = data.sessionStarted || Date.now();
+              this.sessionStartIso = data.sessionStartIso || new Date().toISOString();
+              this.activeContext = null;
+              return true;
+            }
           }
         }
-      } catch (e) {
-        // Fallback to fresh reset
-      }
+      } catch (e) {}
       return false;
     }
 
@@ -526,7 +540,8 @@
       this.sessionStartIso = new Date().toISOString();
       this.activeContext = null;
       try {
-        localStorage.removeItem(this.storageKey);
+        const storage = getSafeStorage();
+        if (storage) storage.removeItem(this.storageKey);
       } catch (e) {}
     }
 
@@ -791,4 +806,4 @@
     INTENT_PATTERNS
   };
 
-})(window);
+})(typeof window !== 'undefined' ? window : globalThis);
