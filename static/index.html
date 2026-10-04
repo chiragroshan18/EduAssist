@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAssist — Intelligent Student Support & Academic Guidance Chatbot</title>
+  
+  <!-- Relative paths ensure 100% compatibility with GitHub Pages repository subpaths -->
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/print.css" media="print">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 8.55L4.47 9 12 4.91 19.53 9 12 11.55zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z'/></svg>">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <div class="brand-title-wrap">
+        <h1 class="brand-title">EduAssist</h1>
+        <span class="brand-tagline">Ask. Understand. Get Guidance.</span>
+      </div>
+    </div>
+
+    <div class="header-status-controls">
+      <!-- Active Processing Engine Badge -->
+      <div id="engineModeBadge" class="engine-badge" title="Click to view engine architecture">
+        <span class="engine-dot"></span>
+        <span id="engineModeText">Connecting...</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="btnAnalyze" class="btn btn-secondary" title="Analyze conversation summary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Analyze
+        </button>
+        <button id="btnDemo" class="btn btn-secondary" title="Load realistic demo conversation">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Demo
+        </button>
+        <button id="btnPrint" class="btn btn-secondary" title="Print or Export conversation report">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Report
+        </button>
+        <button id="btnClear" class="btn btn-danger-outline" title="Clear current chat and reset analytics">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Printable Header Container (Used exclusively when printing report) -->
+  <div class="print-report-header">
+    <div class="print-report-title">EduAssist Academic Guidance & Support Report</div>
+    <div class="print-report-subtitle">Generated automatically by EduAssist Intelligent Counseling System</div>
+    <div class="print-meta-grid">
+      <div class="print-meta-item">
+        <div class="print-meta-label">Date & Time</div>
+        <div id="printDate" class="print-meta-val">-</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Total Messages</div>
+        <div id="printTotalMsgs" class="print-meta-val">0</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Primary Topic</div>
+        <div id="printPrimaryIntent" class="print-meta-val">-</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Dominant Tone</div>
+        <div id="printTone" class="print-meta-val">-</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Workspace -->
+  <main class="main-container">
+    
+    <!-- Left Column: Chat Workspace -->
+    <section class="chat-workspace">
+      <div class="chat-banner">
+        <div class="chat-banner-info">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Academic Counseling Chat
+        </div>
+        <span class="chat-banner-badge" id="sessionStatusBadge">Active Session</span>
+      </div>
+
+      <!-- Message History Container -->
+      <div id="chatMessages" class="chat-messages">
+        <!-- Empty State Placeholder -->
+        <div id="emptyState" class="chat-empty-state">
+          <div class="empty-state-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h2 class="empty-state-title">Welcome to EduAssist</h2>
+          <p class="empty-state-desc">
+            Start a conversation by asking an academic question about exams, study planning, assignments, lab work, or attendance.
+          </p>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typingIndicator" class="typing-indicator">
+        <div class="typing-dots">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+        <span>Analyzing your question...</span>
+      </div>
+
+      <!-- Suggested Questions Bar -->
+      <div class="suggested-bar">
+        <span class="suggested-label">Suggestions:</span>
+        <button class="suggested-btn" data-query="How should I prepare for exams?">How should I prepare for exams?</button>
+        <button class="suggested-btn" data-query="Help me create a study plan.">Help me create a study plan.</button>
+        <button class="suggested-btn" data-query="I need assignment guidance.">I need assignment guidance.</button>
+        <button class="suggested-btn" data-query="How can I prepare for my lab?">How can I prepare for my lab?</button>
+        <button class="suggested-btn" data-query="How can I improve my attendance?">How can I improve my attendance?</button>
+      </div>
+
+      <!-- Message Composer -->
+      <footer class="chat-composer">
+        <div class="composer-input-row">
+          <input 
+            type="text" 
+            id="messageInput" 
+            class="composer-input" 
+            placeholder="Type your academic question here (e.g. How to prepare for my exam?)..." 
+            maxlength="1000"
+            autocomplete="off"
+          />
+          <button id="btnSend" class="btn-send" title="Send message">
+            <span>Send</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="composer-meta">
+          <span>Press Enter to send</span>
+          <span id="charCounter">0 / 1000</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Right Column: Text Analysis & Dashboard Workspace -->
+    <aside class="analytics-workspace">
+      
+      <!-- Panel 1: Live Text Analysis Inspector -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Text Analysis Inspector</span>
+          <span class="panel-subtitle">Rule-Based TSA</span>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Last Analyzed Message</div>
+          <div id="inspectMessage" class="inspect-msg-box">Awaiting student inquiry...</div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Detected Intent</div>
+          <div id="inspectIntent" class="inspect-val">
+            <span class="tag-badge tag-intent">None</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Rule-Based Confidence</div>
+          <div class="confidence-bar-wrap">
+            <div class="progress-track">
+              <div id="confidenceFill" class="progress-fill" style="width: 0%;"></div>
+            </div>
+            <span id="confidenceValText" class="confidence-val-text">0%</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Detected Tone</div>
+          <div id="inspectTone" class="inspect-val">
+            <span class="tag-badge tag-tone-neutral">Neutral</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Extracted Keywords</div>
+          <div id="inspectKeywords" class="keyword-tags-wrap">
+            <span class="keyword-tag">None</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Conversation Statistics -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Conversation Statistics</span>
+          <span class="panel-subtitle" id="statDuration">0s active</span>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Messages</span>
+            <span id="statTotalMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Student Queries</span>
+            <span id="statStudentMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Bot Responses</span>
+            <span id="statBotMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Dominant Tone</span>
+            <span id="statDominantTone" class="stat-value" style="font-size: 1.05rem;">Neutral</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Intent Analytics Distribution -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Intent Distribution</span>
+          <span class="panel-subtitle">Dynamic Runtime Analytics</span>
+        </div>
+
+        <div id="intentDistList" class="distribution-list">
+          <div style="font-size: 0.8rem; color: var(--color-text-muted); text-align: center; padding: 20px 0;">
+            No intents detected yet
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ============================================================================
+       Modals
+       ============================================================================ -->
+
+  <!-- Modal 1: Clear Confirmation -->
+  <div id="modalClear" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Clear Conversation History</h3>
+        <button class="btn-close-modal" data-close-modal="modalClear">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to clear the entire chat conversation?</p>
+        <p style="margin-top: 10px;">This will reset runtime conversation logs, intent distribution metrics, and live session analytics.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal="modalClear">Cancel</button>
+        <button id="btnConfirmClear" class="btn btn-primary" style="background-color: #e11d48;">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Conversation Analysis Summary -->
+  <div id="modalAnalysis" class="modal-overlay">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Conversation Analysis & Summary</h3>
+        <button class="btn-close-modal" data-close-modal="modalAnalysis">&times;</button>
+      </div>
+      <div id="analysisModalBody" class="modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button id="btnExportAnalysis" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Report
+        </button>
+        <button class="btn btn-secondary" data-close-modal="modalAnalysis">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Engine Architecture Information -->
+  <div id="modalEngineInfo" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">EduAssist Architecture & Engine Mode</h3>
+        <button class="btn-close-modal" data-close-modal="modalEngineInfo">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>EduAssist Dual-Engine Architecture:</strong></p>
+        <p style="margin-top: 8px;">
+          <strong>Mode 1 — Full Flask Application:</strong><br>
+          Browser (HTML/CSS/JS) &rarr; Fetch API &rarr; Flask REST API &rarr; Python NLP Preprocessing & Intent Engine.
+        </p>
+        <p style="margin-top: 10px;">
+          <strong>Mode 2 — GitHub Pages Static Demo:</strong><br>
+          Static Browser &rarr; Client-Side TSA Engine (Vanilla JavaScript). Reproduces 100% of the identical preprocessing, intent matching, tone detection, and confidence estimation without needing a Python backend on static GitHub Pages hosting.
+        </p>
+        <div style="margin-top: 14px; padding: 10px; background-color: #f1f5f9; border-radius: 6px; font-size: 0.8rem;">
+          <strong>Currently Active Engine:</strong> <span id="currentEngineDetailsText" style="color: var(--color-brand-dark); font-weight: bold;">Detecting...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal="modalEngineInfo">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <!-- Relative paths ensure 100% GitHub Pages compatibility -->
+  <script src="./js/tsa_engine.js"></script>
+  <script src="./js/api_client.js"></script>
+  <script src="./js/app.js"></script>
+
+</body>
+</html>

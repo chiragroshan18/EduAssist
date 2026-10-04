@@ -1,0 +1,129 @@
+/* ==============================================================================
+   EduAssist - A4 Friendly Print Stylesheet
+   Formats the Conversation Report cleanly when exported or printed.
+   ============================================================================== */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Hide interactive interface components */
+  .app-header,
+  .suggested-bar,
+  .chat-composer,
+  .header-actions,
+  .btn,
+  .typing-indicator,
+  .toast-container,
+  .modal-overlay,
+  .engine-badge {
+    display: none !important;
+  }
+
+  /* Hide right panel elements that duplicate transcript */
+  .analytics-workspace {
+    display: none !important;
+  }
+
+  /* Expand print report container */
+  .main-container {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .chat-workspace {
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .chat-messages {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0 !important;
+  }
+
+  /* Printable Report Header */
+  .print-report-header {
+    display: block !important;
+    border-bottom: 2px solid #334155;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+
+  .print-report-title {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #0f172a;
+  }
+
+  .print-report-subtitle {
+    font-size: 11pt;
+    color: #475569;
+    margin-top: 4px;
+  }
+
+  .print-meta-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    page-break-inside: avoid;
+  }
+
+  .print-meta-item {
+    font-size: 9pt;
+  }
+
+  .print-meta-label {
+    font-weight: bold;
+    color: #475569;
+    text-transform: uppercase;
+  }
+
+  .print-meta-val {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #0f172a;
+    margin-top: 2px;
+  }
+
+  .message-row {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+    margin-bottom: 14px;
+  }
+
+  .message-bubble {
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  .message-row.student .message-bubble {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+
+  .follow-up-container {
+    display: none !important;
+  }
+}
+
+.print-report-header,
+.print-meta-grid {
+  display: none;
+}
