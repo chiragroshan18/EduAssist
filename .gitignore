@@ -9,10 +9,14 @@ venv/
 ENV/
 .env
 
-# Testing / Cache
+# Test files and test directory (Excluded from production and Git pushes)
+tests/
+test_*.py
+*_test.py
 .pytest_cache/
 .coverage
 htmlcov/
+scratch/
 
 # IDE / OS
 .vscode/
