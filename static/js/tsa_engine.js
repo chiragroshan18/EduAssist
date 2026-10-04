@@ -4,13 +4,8 @@
  * Provides 100% parity with the Python backend for standalone browser execution,
  * offline usage, and static GitHub Pages demonstration.
  * 
- * Implements:
- *  - Text preprocessing & tokenization: O(n)
- *  - Keyword extraction: O(m)
- *  - Rule-based intent detection & deterministic confidence: O(k * m)
- *  - Rule-based tone / sentiment analysis: O(m)
- *  - Educational response templates & conversational context: O(1)
- *  - Runtime state management & conversation analytics: O(m)
+ * Centralized In-Memory Runtime State stored cleanly in Lists & Dictionaries
+ * with transparent LocalStorage persistence.
  */
 
 (function (window) {
@@ -476,12 +471,51 @@
   }
 
   // ============================================================================
-  // Client-Side Session State Manager
+  // Client-Side Session State Manager with Persistent Memory
   // ============================================================================
 
   class ClientSessionState {
     constructor() {
-      this.reset();
+      this.storageKey = 'eduassist_client_session';
+      if (!this.loadFromStorage()) {
+        this.reset();
+      }
+    }
+
+    saveToStorage() {
+      try {
+        const payload = {
+          conversation: this.conversation,
+          intentCounts: this.intentCounts,
+          toneCounts: this.toneCounts,
+          sessionStarted: this.sessionStarted,
+          sessionStartIso: this.sessionStartIso
+        };
+        localStorage.setItem(this.storageKey, JSON.stringify(payload));
+      } catch (e) {
+        // localStorage unavailable in some sandboxes
+      }
+    }
+
+    loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(this.storageKey);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data && Array.isArray(data.conversation)) {
+            this.conversation = data.conversation;
+            this.intentCounts = data.intentCounts || {};
+            this.toneCounts = data.toneCounts || { positive: 0, neutral: 0, concerned: 0, frustrated: 0 };
+            this.sessionStarted = data.sessionStarted || Date.now();
+            this.sessionStartIso = data.sessionStartIso || new Date().toISOString();
+            this.activeContext = null;
+            return true;
+          }
+        }
+      } catch (e) {
+        // Fallback to fresh reset
+      }
+      return false;
     }
 
     reset() {
@@ -491,6 +525,9 @@
       this.sessionStarted = Date.now();
       this.sessionStartIso = new Date().toISOString();
       this.activeContext = null;
+      try {
+        localStorage.removeItem(this.storageKey);
+      } catch (e) {}
     }
 
     addMessage(sender, text, intent = null, confidence = null, tone = null, keywords = [], followUps = []) {
@@ -518,6 +555,8 @@
           this.toneCounts[tone]++;
         }
       }
+
+      this.saveToStorage();
       return msg;
     }
 
@@ -668,6 +707,7 @@
           item.follow_ups
         );
       }
+      this.saveToStorage();
     }
 
     analyzeConversation() {

@@ -1,7 +1,7 @@
 /**
  * EduAssist Application Controller
- * Handles UI interactions, message rendering, dynamic analytics,
- * theme management, animated counters, modal dialogs, and engine state coordination.
+ * Handles UI interactions, animated message streaming, dynamic analytics,
+ * audio chime synthesis, theme management, and modal dialogs.
  */
 
 (function () {
@@ -17,7 +17,9 @@
     btnSend: document.getElementById('btnSend'),
     charCounter: document.getElementById('charCounter'),
     
-    // Theme toggle
+    // Toggles
+    btnSoundToggle: document.getElementById('btnSoundToggle'),
+    soundIcon: document.getElementById('soundIcon'),
     btnThemeToggle: document.getElementById('btnThemeToggle'),
     themeIconSun: document.getElementById('themeIconSun'),
 
@@ -65,12 +67,53 @@
   };
 
   let isProcessing = false;
+  let soundEnabled = true;
+  let audioCtx = null;
+
+  // ============================================================================
+  // Web Audio Synthesizer (Zero-Dependency Micro-Chimes)
+  // ============================================================================
+  function playChime(type = 'sent') {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+      if (type === 'sent') {
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      } else {
+        osc.frequency.setValueAtTime(660, now);
+        osc.frequency.exponentialRampToValueAtTime(990, now + 0.18);
+        gain.gain.setValueAtTime(0.09, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      }
+    } catch (e) {
+      // AudioContext not allowed or not supported; gracefully ignore
+    }
+  }
 
   // ============================================================================
   // Initialization
   // ============================================================================
   async function init() {
     initTheme();
+    initSound();
     setupEventListeners();
 
     // Register engine mode listener
@@ -84,8 +127,40 @@
   }
 
   // ============================================================================
-  // Theme Management (Dark / Light with LocalStorage)
+  // Sound & Theme Management
   // ============================================================================
+  function initSound() {
+    const savedSound = localStorage.getItem('eduassist_sound');
+    soundEnabled = savedSound !== 'false';
+    updateSoundUI();
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('eduassist_sound', soundEnabled ? 'true' : 'false');
+    updateSoundUI();
+    if (soundEnabled) playChime('sent');
+  }
+
+  function updateSoundUI() {
+    if (!dom.btnSoundToggle) return;
+    if (soundEnabled) {
+      dom.btnSoundToggle.classList.add('active');
+      dom.btnSoundToggle.title = 'Sound Effects: ON (Click to Mute)';
+      dom.soundIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      `;
+    } else {
+      dom.btnSoundToggle.classList.remove('active');
+      dom.btnSoundToggle.title = 'Sound Effects: MUTED (Click to Enable)';
+      dom.soundIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+      `;
+    }
+  }
+
   function initTheme() {
     const savedTheme = localStorage.getItem('eduassist_theme') || 'dark';
     setTheme(savedTheme);
@@ -97,10 +172,8 @@
 
     if (dom.themeIconSun) {
       if (theme === 'dark') {
-        // Show Sun icon (to switch to light)
         dom.themeIconSun.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
       } else {
-        // Show Moon icon (to switch to dark)
         dom.themeIconSun.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
       }
     }
@@ -129,7 +202,10 @@
   // Event Listeners
   // ============================================================================
   function setupEventListeners() {
-    // Theme toggle
+    // Sound & Theme toggles
+    if (dom.btnSoundToggle) {
+      dom.btnSoundToggle.addEventListener('click', toggleSound);
+    }
     if (dom.btnThemeToggle) {
       dom.btnThemeToggle.addEventListener('click', toggleTheme);
     }
@@ -232,6 +308,9 @@
       dom.emptyState.style.display = 'none';
     }
 
+    // Play soft send chime
+    playChime('sent');
+
     // Append optimistic student bubble
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -253,13 +332,11 @@
       showTyping(false);
 
       if (response && response.success) {
+        // Play receive chime
+        playChime('received');
+
         // Append bot bubble with animated reveal
-        appendMessageBubble({
-          sender: "bot",
-          text: response.response,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          follow_ups: response.follow_ups || []
-        });
+        appendBotMessageWithStream(response.response, response.follow_ups || []);
 
         // Update Text Analysis Panel
         updateInspector({
@@ -293,7 +370,7 @@
   }
 
   // ============================================================================
-  // Rendering Message Bubbles
+  // Rendering Message Bubbles with Dynamic Streaming
   // ============================================================================
   function appendMessageBubble(msg) {
     const isStudent = msg.sender === 'student';
@@ -341,28 +418,64 @@
 
     // Follow up suggestion chips (for bot responses)
     if (!isStudent && msg.follow_ups && msg.follow_ups.length > 0) {
-      const chipContainer = document.createElement('div');
-      chipContainer.className = 'follow-up-container';
-
-      msg.follow_ups.forEach(text => {
-        const chip = document.createElement('button');
-        chip.className = 'follow-up-chip';
-        chip.innerHTML = `
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          <span>${escapeHtml(text)}</span>
-        `;
-        chip.addEventListener('click', () => {
-          dom.messageInput.value = text;
-          handleSendMessage();
-        });
-        chipContainer.appendChild(chip);
-      });
-      body.appendChild(chipContainer);
+      renderFollowUpChips(body, msg.follow_ups);
     }
 
     row.appendChild(avatar);
     row.appendChild(body);
     dom.chatMessages.appendChild(row);
+  }
+
+  function appendBotMessageWithStream(fullText, followUps = []) {
+    const row = document.createElement('div');
+    row.className = 'message-row bot';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar avatar-bot';
+    avatar.textContent = 'EA';
+
+    const body = document.createElement('div');
+    body.className = 'message-body';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = formatMessageText(fullText);
+    body.appendChild(bubble);
+
+    const meta = document.createElement('div');
+    meta.className = 'message-meta';
+    const timeSpan = document.createElement('span');
+    timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    meta.appendChild(timeSpan);
+    body.appendChild(meta);
+
+    row.appendChild(avatar);
+    row.appendChild(body);
+    dom.chatMessages.appendChild(row);
+
+    if (followUps && followUps.length > 0) {
+      renderFollowUpChips(body, followUps);
+    }
+  }
+
+  function renderFollowUpChips(parentBody, followUps) {
+    const chipContainer = document.createElement('div');
+    chipContainer.className = 'follow-up-container';
+
+    followUps.forEach(text => {
+      const chip = document.createElement('button');
+      chip.className = 'follow-up-chip';
+      chip.innerHTML = `
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <span>${escapeHtml(text)}</span>
+      `;
+      chip.addEventListener('click', () => {
+        dom.messageInput.value = text;
+        handleSendMessage();
+      });
+      chipContainer.appendChild(chip);
+    });
+    parentBody.appendChild(chipContainer);
   }
 
   function formatMessageText(text) {
@@ -542,7 +655,7 @@
 
     if (keys.length === 0) {
       dom.intentDistList.innerHTML = `
-        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 22px 0;">
+        <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 22px 0;">
           No intents detected yet
         </div>
       `;
@@ -636,25 +749,25 @@
       if (data.key_topics && data.key_topics.length > 0) {
         topicsHtml = `
           <div class="keyword-tags-wrap" style="margin-top: 6px;">
-            ${data.key_topics.map(t => `<span class="keyword-tag" style="background: rgba(99, 102, 241, 0.2); color: var(--accent-cyan); font-weight: 700; border-color: rgba(99, 102, 241, 0.4);">${escapeHtml(t)}</span>`).join('')}
+            ${data.key_topics.map(t => `<span class="keyword-tag" style="background: rgba(99, 102, 241, 0.25); color: var(--accent-cyan); font-weight: 700; border-color: rgba(99, 102, 241, 0.45); font-size: 0.82rem; padding: 4px 12px;">${escapeHtml(t)}</span>`).join('')}
           </div>
         `;
       }
 
       dom.analysisModalBody.innerHTML = `
-        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border-left: 4px solid var(--accent-cyan);">
-          <h4 style="font-size: 0.96rem; color: var(--text-primary); margin-bottom: 6px; font-weight: 800;">Executive Counseling Synthesis</h4>
-          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">${escapeHtml(data.summary_text)}</p>
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 18px; margin-bottom: 16px; border-left: 4px solid var(--accent-cyan);">
+          <h4 style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 6px; font-weight: 800;">Executive Counseling Synthesis</h4>
+          <p style="font-size: 0.92rem; line-height: 1.65; color: var(--text-secondary);">${escapeHtml(data.summary_text)}</p>
         </div>
 
         <div class="dashboard-grid" style="margin-bottom: 16px;">
           <div class="stat-card">
             <span class="stat-label">Primary Topic</span>
-            <span class="stat-value" style="font-size: 1.05rem; color: var(--accent-cyan);">${escapeHtml(data.primary_intent || 'None')}</span>
+            <span class="stat-value" style="font-size: 1.1rem; color: var(--accent-cyan);">${escapeHtml(data.primary_intent || 'None')}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Dominant Tone</span>
-            <span class="stat-value" style="font-size: 1.05rem;">${escapeHtml(data.dominant_tone || 'Neutral')}</span>
+            <span class="stat-value" style="font-size: 1.1rem;">${escapeHtml(data.dominant_tone || 'Neutral')}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Total Messages</span>
@@ -662,11 +775,11 @@
           </div>
           <div class="stat-card">
             <span class="stat-label">Analysis Timestamp</span>
-            <span class="stat-value" style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${escapeHtml(data.generated_at || '-')}</span>
+            <span class="stat-value" style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">${escapeHtml(data.generated_at || '-')}</span>
           </div>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 12px;">
           <div class="inspect-label">Key Topics Identified</div>
           ${topicsHtml}
         </div>
@@ -723,7 +836,7 @@
     dom.toastContainer.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px) scale(0.95)';
+      toast.style.transform = 'translateY(12px) scale(0.95)';
       toast.style.transition = 'all 0.3s ease';
       setTimeout(() => toast.remove(), 300);
     }, 3200);
