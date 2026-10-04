@@ -1,7 +1,7 @@
 /**
  * EduAssist Application Controller
  * Handles UI interactions, message rendering, dynamic analytics,
- * modal dialogs, and engine state coordination.
+ * theme management, animated counters, modal dialogs, and engine state coordination.
  */
 
 (function () {
@@ -9,6 +9,7 @@
 
   // DOM Element References
   const dom = {
+    htmlRoot: document.documentElement,
     chatMessages: document.getElementById('chatMessages'),
     emptyState: document.getElementById('emptyState'),
     typingIndicator: document.getElementById('typingIndicator'),
@@ -16,6 +17,10 @@
     btnSend: document.getElementById('btnSend'),
     charCounter: document.getElementById('charCounter'),
     
+    // Theme toggle
+    btnThemeToggle: document.getElementById('btnThemeToggle'),
+    themeIconSun: document.getElementById('themeIconSun'),
+
     // Inspector elements
     inspectMessage: document.getElementById('inspectMessage'),
     inspectIntent: document.getElementById('inspectIntent'),
@@ -65,6 +70,7 @@
   // Initialization
   // ============================================================================
   async function init() {
+    initTheme();
     setupEventListeners();
 
     // Register engine mode listener
@@ -77,19 +83,45 @@
     await refreshConversationAndStats();
   }
 
+  // ============================================================================
+  // Theme Management (Dark / Light with LocalStorage)
+  // ============================================================================
+  function initTheme() {
+    const savedTheme = localStorage.getItem('eduassist_theme') || 'dark';
+    setTheme(savedTheme);
+  }
+
+  function setTheme(theme) {
+    dom.htmlRoot.setAttribute('data-theme', theme);
+    localStorage.setItem('eduassist_theme', theme);
+
+    if (dom.themeIconSun) {
+      if (theme === 'dark') {
+        // Show Sun icon (to switch to light)
+        dom.themeIconSun.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      } else {
+        // Show Moon icon (to switch to dark)
+        dom.themeIconSun.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      }
+    }
+  }
+
+  function toggleTheme() {
+    const current = dom.htmlRoot.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+  }
+
+  // ============================================================================
+  // Engine UI State
+  // ============================================================================
   function updateEngineUI(mode) {
     if (mode === 'flask') {
       dom.engineModeText.textContent = "Flask REST API";
-      dom.engineModeBadge.style.backgroundColor = "#ecfdf5";
-      dom.engineModeBadge.style.color = "#065f46";
-      dom.engineModeBadge.style.borderColor = "#a7f3d0";
       dom.currentEngineDetailsText.textContent = "Python 3 + Flask REST API (Active)";
     } else {
       dom.engineModeText.textContent = "Client TSA Engine (Demo)";
-      dom.engineModeBadge.style.backgroundColor = "#eff6ff";
-      dom.engineModeBadge.style.color = "#1d4ed8";
-      dom.engineModeBadge.style.borderColor = "#bfdbfe";
-      dom.currentEngineDetailsText.textContent = "Browser-Side TSA Engine (Zero-Backend Static Parity Mode)";
+      dom.currentEngineDetailsText.textContent = "Browser-Side TSA Engine (Zero-Backend Static Demo Mode)";
     }
   }
 
@@ -97,6 +129,11 @@
   // Event Listeners
   // ============================================================================
   function setupEventListeners() {
+    // Theme toggle
+    if (dom.btnThemeToggle) {
+      dom.btnThemeToggle.addEventListener('click', toggleTheme);
+    }
+
     // Send message on click
     dom.btnSend.addEventListener('click', handleSendMessage);
 
@@ -114,12 +151,23 @@
       dom.charCounter.textContent = `${len} / 1000`;
     });
 
-    // Suggested questions buttons
+    // Quick Action Suggestions
     document.querySelectorAll('.suggested-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const query = btn.getAttribute('data-query');
         if (query) {
           dom.messageInput.value = query;
+          handleSendMessage();
+        }
+      });
+    });
+
+    // Empty state interactive prompt cards
+    document.querySelectorAll('.empty-prompt-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const prompt = card.getAttribute('data-prompt');
+        if (prompt) {
+          dom.messageInput.value = prompt;
           handleSendMessage();
         }
       });
@@ -161,7 +209,7 @@
   }
 
   // ============================================================================
-  // Chat Message Sending & Processing
+  // Chat Message Sending & Dynamic Processing
   // ============================================================================
   async function handleSendMessage() {
     if (isProcessing) return;
@@ -205,7 +253,7 @@
       showTyping(false);
 
       if (response && response.success) {
-        // Append bot bubble
+        // Append bot bubble with animated reveal
         appendMessageBubble({
           sender: "bot",
           text: response.response,
@@ -299,7 +347,10 @@
       msg.follow_ups.forEach(text => {
         const chip = document.createElement('button');
         chip.className = 'follow-up-chip';
-        chip.textContent = text;
+        chip.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <span>${escapeHtml(text)}</span>
+        `;
         chip.addEventListener('click', () => {
           dom.messageInput.value = text;
           handleSendMessage();
@@ -316,7 +367,6 @@
 
   function formatMessageText(text) {
     if (!text) return '';
-    // Escape HTML
     let safe = text
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -356,24 +406,31 @@
   }
 
   // ============================================================================
-  // Text Analysis Inspector & Dashboard Updaters
+  // Text Analysis Inspector & Dynamic Dashboard
   // ============================================================================
   function updateInspector(data) {
     // Message snippet
-    dom.inspectMessage.textContent = `"${data.message || 'Awaiting inquiry...'}"`;
+    dom.inspectMessage.textContent = `"${data.message || 'Awaiting student inquiry...'}"`;
 
     // Intent
     const intentLabel = data.intent || 'None';
     dom.inspectIntent.innerHTML = `<span class="tag-badge tag-intent">${escapeHtml(intentLabel)}</span>`;
 
-    // Confidence
+    // Confidence animated
     const confVal = data.confidence ? Math.round(data.confidence * 100) : 0;
     dom.confidenceFill.style.width = `${confVal}%`;
-    dom.confidenceValText.textContent = `${confVal}%`;
+    animateCount(dom.confidenceValText, confVal, '%');
 
-    // Tone
+    // Tone with dynamic color & icon
     const toneVal = data.tone || 'neutral';
-    dom.inspectTone.innerHTML = `<span class="tag-badge tag-tone-${toneVal}">${escapeHtml(toneVal.charAt(0).toUpperCase() + toneVal.slice(1))}</span>`;
+    const toneIcons = {
+      positive: '✨ Positive',
+      concerned: '⚠️ Concerned',
+      frustrated: '🔥 Frustrated',
+      neutral: '💡 Neutral'
+    };
+    const toneDisplay = toneIcons[toneVal] || toneVal;
+    dom.inspectTone.innerHTML = `<span class="tag-badge tag-tone-${toneVal}">${escapeHtml(toneDisplay)}</span>`;
 
     // Keywords
     dom.inspectKeywords.innerHTML = '';
@@ -388,6 +445,30 @@
     } else {
       dom.inspectKeywords.innerHTML = '<span class="keyword-tag">None</span>';
     }
+  }
+
+  function animateCount(elem, targetVal, suffix = '') {
+    if (!elem) return;
+    const startVal = parseInt(elem.textContent) || 0;
+    if (startVal === targetVal) {
+      elem.textContent = `${targetVal}${suffix}`;
+      return;
+    }
+    const duration = 400;
+    const startTime = performance.now();
+
+    function updateCounter(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const current = Math.floor(startVal + (targetVal - startVal) * progress);
+      elem.textContent = `${current}${suffix}`;
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        elem.textContent = `${targetVal}${suffix}`;
+      }
+    }
+    requestAnimationFrame(updateCounter);
   }
 
   async function refreshDashboardOnly() {
@@ -446,10 +527,12 @@
   }
 
   function renderDashboard(analytics) {
-    dom.statTotalMsgs.textContent = analytics.total_messages || 0;
-    dom.statStudentMsgs.textContent = analytics.student_messages || 0;
-    dom.statBotMsgs.textContent = analytics.bot_responses || 0;
-    dom.statDominantTone.textContent = (analytics.current_tone || 'Neutral').charAt(0).toUpperCase() + (analytics.current_tone || 'neutral').slice(1);
+    animateCount(dom.statTotalMsgs, analytics.total_messages || 0);
+    animateCount(dom.statStudentMsgs, analytics.student_messages || 0);
+    animateCount(dom.statBotMsgs, analytics.bot_responses || 0);
+
+    const dominantTone = (analytics.current_tone || 'Neutral');
+    dom.statDominantTone.textContent = dominantTone.charAt(0).toUpperCase() + dominantTone.slice(1);
     dom.statDuration.textContent = `${analytics.session_duration || '0s'} active`;
 
     // Render Intent Distribution Chart Bars
@@ -459,7 +542,7 @@
 
     if (keys.length === 0) {
       dom.intentDistList.innerHTML = `
-        <div style="font-size: 0.8rem; color: var(--color-text-muted); text-align: center; padding: 20px 0;">
+        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 22px 0;">
           No intents detected yet
         </div>
       `;
@@ -480,7 +563,7 @@
       item.innerHTML = `
         <div class="dist-header">
           <span>${escapeHtml(friendlyName)}</span>
-          <span><strong>${count}</strong> (${pct}%)</span>
+          <span style="font-family: var(--font-mono);"><strong>${count}</strong> (${pct}%)</span>
         </div>
         <div class="dist-bar-track">
           <div class="dist-bar-fill" style="width: ${barPct}%;"></div>
@@ -514,7 +597,7 @@
 
   async function handleLoadDemo() {
     try {
-      showToast("Loading demo conversation...", "success");
+      showToast("Loading realistic demo conversation...", "success");
       const res = await window.apiClient.loadDemoConversation();
       if (res && res.messages) {
         renderConversationThread(res.messages);
@@ -549,25 +632,25 @@
       }
       const data = res.analysis;
 
-      let topicsHtml = '<p style="color: var(--color-text-muted);">None identified yet</p>';
+      let topicsHtml = '<p style="color: var(--text-muted);">None identified yet</p>';
       if (data.key_topics && data.key_topics.length > 0) {
         topicsHtml = `
           <div class="keyword-tags-wrap" style="margin-top: 6px;">
-            ${data.key_topics.map(t => `<span class="keyword-tag" style="background-color: #e0e7ff; color: #3730a3; font-weight: 600;">${escapeHtml(t)}</span>`).join('')}
+            ${data.key_topics.map(t => `<span class="keyword-tag" style="background: rgba(99, 102, 241, 0.2); color: var(--accent-cyan); font-weight: 700; border-color: rgba(99, 102, 241, 0.4);">${escapeHtml(t)}</span>`).join('')}
           </div>
         `;
       }
 
       dom.analysisModalBody.innerHTML = `
-        <div style="background-color: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
-          <h4 style="font-size: 0.92rem; color: var(--color-text-primary); margin-bottom: 6px;">Executive Counseling Summary</h4>
-          <p style="font-size: 0.85rem; line-height: 1.55; color: var(--color-text-secondary);">${escapeHtml(data.summary_text)}</p>
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border-left: 4px solid var(--accent-cyan);">
+          <h4 style="font-size: 0.96rem; color: var(--text-primary); margin-bottom: 6px; font-weight: 800;">Executive Counseling Synthesis</h4>
+          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">${escapeHtml(data.summary_text)}</p>
         </div>
 
-        <div class="dashboard-grid" style="margin-bottom: 14px;">
+        <div class="dashboard-grid" style="margin-bottom: 16px;">
           <div class="stat-card">
             <span class="stat-label">Primary Topic</span>
-            <span class="stat-value" style="font-size: 1.05rem;">${escapeHtml(data.primary_intent || 'None')}</span>
+            <span class="stat-value" style="font-size: 1.05rem; color: var(--accent-cyan);">${escapeHtml(data.primary_intent || 'None')}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Dominant Tone</span>
@@ -578,8 +661,8 @@
             <span class="stat-value">${data.total_messages || 0}</span>
           </div>
           <div class="stat-card">
-            <span class="stat-label">Generated Timestamp</span>
-            <span class="stat-value" style="font-size: 0.75rem; color: var(--color-text-muted);">${escapeHtml(data.generated_at || '-')}</span>
+            <span class="stat-label">Analysis Timestamp</span>
+            <span class="stat-value" style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${escapeHtml(data.generated_at || '-')}</span>
           </div>
         </div>
 
@@ -640,7 +723,8 @@
     dom.toastContainer.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.3s ease';
+      toast.style.transform = 'translateY(10px) scale(0.95)';
+      toast.style.transition = 'all 0.3s ease';
       setTimeout(() => toast.remove(), 300);
     }, 3200);
   }
