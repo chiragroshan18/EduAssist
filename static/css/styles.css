@@ -1159,6 +1159,148 @@ body {
 }
 
 /* ==============================================================================
+   Panel 4: Sentiment & Tone Spectrum Chart (SVG Donut & Legend Grid)
+   ============================================================================== */
+.sentiment-chart-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.donut-chart-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-svg {
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.donut-bg {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.15);
+  stroke-width: 10;
+}
+
+.donut-segment {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.segment-positive {
+  stroke: var(--tone-positive);
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4));
+}
+.segment-neutral {
+  stroke: var(--tone-neutral);
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
+}
+.segment-concerned {
+  stroke: var(--tone-concerned);
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.4));
+}
+.segment-frustrated {
+  stroke: var(--tone-frustrated);
+  filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.4));
+}
+
+.donut-center-info {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.donut-center-tone {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.sentiment-spectrum-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.spectrum-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 9px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.spectrum-item:hover {
+  transform: translateX(3px);
+  border-color: var(--accent-primary);
+}
+
+.spec-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+  display: inline-block;
+}
+
+.dot-positive { background-color: var(--tone-positive); box-shadow: 0 0 6px var(--tone-positive); }
+.dot-neutral { background-color: var(--tone-neutral); box-shadow: 0 0 6px var(--tone-neutral); }
+.dot-concerned { background-color: var(--tone-concerned); box-shadow: 0 0 6px var(--tone-concerned); }
+.dot-frustrated { background-color: var(--tone-frustrated); box-shadow: 0 0 6px var(--tone-frustrated); }
+
+.spec-name {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.spec-count {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.academic-health-wrap {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.health-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+/* ==============================================================================
    Modals
    ============================================================================== */
 .modal-overlay {

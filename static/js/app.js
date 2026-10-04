@@ -47,6 +47,21 @@
     btnDemo: document.getElementById('btnDemo'),
     btnPrint: document.getElementById('btnPrint'),
     btnClear: document.getElementById('btnClear'),
+    btnRestore: document.getElementById('btnRestore'),
+
+    // Panel 4 Sentiment Donut & Spectrum Elements
+    donutSegmentPositive: document.getElementById('donutSegmentPositive'),
+    donutSegmentNeutral: document.getElementById('donutSegmentNeutral'),
+    donutSegmentConcerned: document.getElementById('donutSegmentConcerned'),
+    donutSegmentFrustrated: document.getElementById('donutSegmentFrustrated'),
+    donutCenterIcon: document.getElementById('donutCenterIcon'),
+    donutCenterTone: document.getElementById('donutCenterTone'),
+    countPositive: document.getElementById('countPositive'),
+    countNeutral: document.getElementById('countNeutral'),
+    countConcerned: document.getElementById('countConcerned'),
+    countFrustrated: document.getElementById('countFrustrated'),
+    sentimentClarityPct: document.getElementById('sentimentClarityPct'),
+    sentimentClarityFill: document.getElementById('sentimentClarityFill'),
     
     // Modals
     modalClear: document.getElementById('modalClear'),
@@ -55,7 +70,7 @@
     analysisModalBody: document.getElementById('analysisModalBody'),
     btnExportAnalysis: document.getElementById('btnExportAnalysis'),
     modalEngineInfo: document.getElementById('modalEngineInfo'),
-    
+
     // Print header elements
     printDate: document.getElementById('printDate'),
     printTotalMsgs: document.getElementById('printTotalMsgs'),
@@ -253,6 +268,9 @@
     dom.engineModeBadge.addEventListener('click', () => openModal(dom.modalEngineInfo));
     dom.btnClear.addEventListener('click', () => openModal(dom.modalClear));
     dom.btnConfirmClear.addEventListener('click', handleClearConversation);
+    if (dom.btnRestore) {
+      dom.btnRestore.addEventListener('click', handleRestoreConversation);
+    }
     dom.btnDemo.addEventListener('click', handleLoadDemo);
     dom.btnAnalyze.addEventListener('click', handleAnalyzeConversation);
     dom.btnPrint.addEventListener('click', handlePrintReport);
@@ -659,35 +677,131 @@
           No intents detected yet
         </div>
       `;
+    } else {
+      const maxCount = Math.max(...Object.values(dist), 1);
+      const totalStudent = analytics.student_messages || 1;
+
+      keys.forEach(k => {
+        const count = dist[k];
+        const pct = Math.round((count / totalStudent) * 100);
+        const barPct = Math.round((count / maxCount) * 100);
+        const friendlyName = k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+        const item = document.createElement('div');
+        item.className = 'distribution-item';
+        item.innerHTML = `
+          <div class="dist-header">
+            <span>${escapeHtml(friendlyName)}</span>
+            <span style="font-family: var(--font-mono);"><strong>${count}</strong> (${pct}%)</span>
+          </div>
+          <div class="dist-bar-track">
+            <div class="dist-bar-fill" style="width: ${barPct}%;"></div>
+          </div>
+        `;
+        dom.intentDistList.appendChild(item);
+      });
+    }
+
+    // Render Dynamic Sentiment Donut & Spectrum Breakdown
+    renderSentimentDonutChart(analytics);
+  }
+
+  function renderSentimentDonutChart(analytics) {
+    if (!dom.donutSegmentPositive) return;
+
+    const toneDist = analytics.tone_distribution || {};
+    const pos = toneDist.positive || 0;
+    const neu = toneDist.neutral || 0;
+    const con = toneDist.concerned || 0;
+    const fru = toneDist.frustrated || 0;
+    const total = pos + neu + con + fru;
+
+    // Circumference of r=48 is 2 * Math.PI * 48 ≈ 301.59
+    const C = 301.59;
+
+    if (total === 0) {
+      dom.donutSegmentPositive.setAttribute('stroke-dasharray', `0 ${C}`);
+      dom.donutSegmentNeutral.setAttribute('stroke-dasharray', `0 ${C}`);
+      dom.donutSegmentConcerned.setAttribute('stroke-dasharray', `0 ${C}`);
+      dom.donutSegmentFrustrated.setAttribute('stroke-dasharray', `0 ${C}`);
+
+      dom.donutSegmentPositive.setAttribute('stroke-dashoffset', '0');
+      dom.donutSegmentNeutral.setAttribute('stroke-dashoffset', '0');
+      dom.donutSegmentConcerned.setAttribute('stroke-dashoffset', '0');
+      dom.donutSegmentFrustrated.setAttribute('stroke-dashoffset', '0');
+
+      dom.countPositive.textContent = '0 (0%)';
+      dom.countNeutral.textContent = '0 (0%)';
+      dom.countConcerned.textContent = '0 (0%)';
+      dom.countFrustrated.textContent = '0 (0%)';
+
+      dom.donutCenterIcon.textContent = '💡';
+      dom.donutCenterTone.textContent = 'Neutral';
+
+      dom.sentimentClarityPct.textContent = '100%';
+      dom.sentimentClarityFill.style.width = '100%';
+      dom.sentimentClarityFill.style.background = 'linear-gradient(90deg, #10b981, #38bdf8)';
       return;
     }
 
-    const maxCount = Math.max(...Object.values(dist), 1);
-    const totalStudent = analytics.student_messages || 1;
+    const posPct = Math.round((pos / total) * 100);
+    const neuPct = Math.round((neu / total) * 100);
+    const conPct = Math.round((con / total) * 100);
+    const fruPct = Math.round((fru / total) * 100);
 
-    keys.forEach(k => {
-      const count = dist[k];
-      const pct = Math.round((count / totalStudent) * 100);
-      const barPct = Math.round((count / maxCount) * 100);
-      const friendlyName = k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    dom.countPositive.textContent = `${pos} (${posPct}%)`;
+    dom.countNeutral.textContent = `${neu} (${neuPct}%)`;
+    dom.countConcerned.textContent = `${con} (${conPct}%)`;
+    dom.countFrustrated.textContent = `${fru} (${fruPct}%)`;
 
-      const item = document.createElement('div');
-      item.className = 'distribution-item';
-      item.innerHTML = `
-        <div class="dist-header">
-          <span>${escapeHtml(friendlyName)}</span>
-          <span style="font-family: var(--font-mono);"><strong>${count}</strong> (${pct}%)</span>
-        </div>
-        <div class="dist-bar-track">
-          <div class="dist-bar-fill" style="width: ${barPct}%;"></div>
-        </div>
-      `;
-      dom.intentDistList.appendChild(item);
-    });
+    // Dynamic Donut Segments with cumulative offset
+    const posLen = (pos / total) * C;
+    const neuLen = (neu / total) * C;
+    const conLen = (con / total) * C;
+    const fruLen = (fru / total) * C;
+
+    let offset = 0;
+    dom.donutSegmentPositive.setAttribute('stroke-dasharray', `${posLen.toFixed(1)} ${C.toFixed(1)}`);
+    dom.donutSegmentPositive.setAttribute('stroke-dashoffset', `${(-offset).toFixed(1)}`);
+    offset += posLen;
+
+    dom.donutSegmentNeutral.setAttribute('stroke-dasharray', `${neuLen.toFixed(1)} ${C.toFixed(1)}`);
+    dom.donutSegmentNeutral.setAttribute('stroke-dashoffset', `${(-offset).toFixed(1)}`);
+    offset += neuLen;
+
+    dom.donutSegmentConcerned.setAttribute('stroke-dasharray', `${conLen.toFixed(1)} ${C.toFixed(1)}`);
+    dom.donutSegmentConcerned.setAttribute('stroke-dashoffset', `${(-offset).toFixed(1)}`);
+    offset += conLen;
+
+    dom.donutSegmentFrustrated.setAttribute('stroke-dasharray', `${fruLen.toFixed(1)} ${C.toFixed(1)}`);
+    dom.donutSegmentFrustrated.setAttribute('stroke-dashoffset', `${(-offset).toFixed(1)}`);
+
+    // Center icon & tone label
+    const dominant = (analytics.current_tone || 'neutral').toLowerCase();
+    const toneIcons = {
+      positive: '✨',
+      neutral: '💡',
+      concerned: '⚠️',
+      frustrated: '🔥'
+    };
+    dom.donutCenterTone.textContent = dominant.charAt(0).toUpperCase() + dominant.slice(1);
+    dom.donutCenterIcon.textContent = toneIcons[dominant] || '💡';
+
+    // Student Sentiment Clarity Score (Constructive equilibrium index)
+    const clarityScore = Math.max(10, Math.min(100, Math.round(((pos * 100 + neu * 85 + con * 45 + fru * 20) / total))));
+    dom.sentimentClarityPct.textContent = `${clarityScore}%`;
+    dom.sentimentClarityFill.style.width = `${clarityScore}%`;
+    if (clarityScore >= 75) {
+      dom.sentimentClarityFill.style.background = 'linear-gradient(90deg, #10b981, #38bdf8)';
+    } else if (clarityScore >= 50) {
+      dom.sentimentClarityFill.style.background = 'linear-gradient(90deg, #f59e0b, #38bdf8)';
+    } else {
+      dom.sentimentClarityFill.style.background = 'linear-gradient(90deg, #f43f5e, #f59e0b)';
+    }
   }
 
   // ============================================================================
-  // Header Actions: Clear, Demo, Analyze, Print
+  // Header Actions: Clear, Restore, Demo, Analyze, Print
   // ============================================================================
   async function handleClearConversation() {
     try {
@@ -702,9 +816,40 @@
         keywords: []
       });
       await refreshDashboardOnly();
-      showToast("Conversation cleared successfully", "success");
+      showToast("Conversation cleared. Click 'Restore' anytime to recover session.", "success");
     } catch (e) {
       showToast("Failed to clear conversation", "error");
+    }
+  }
+
+  async function handleRestoreConversation() {
+    try {
+      showToast("Restoring previous conversation...", "default");
+      const res = await window.apiClient.restoreConversation();
+      if (res && res.success) {
+        playChime('sent');
+        const msgs = res.messages || [];
+        renderConversationThread(msgs);
+        if (res.analytics) {
+          renderDashboard(res.analytics);
+        }
+        const studentMsgs = msgs.filter(m => m.sender === 'student');
+        if (studentMsgs.length > 0) {
+          const last = studentMsgs[studentMsgs.length - 1];
+          updateInspector({
+            message: last.text,
+            intent: last.intent ? last.intent.replace(/_/g, ' ') : 'None',
+            confidence: last.confidence,
+            tone: last.tone,
+            keywords: last.keywords
+          });
+        }
+        showToast("Previous conversation and metrics restored successfully!", "success");
+      } else {
+        throw new Error(res.error || "No cleared session available to restore");
+      }
+    } catch (err) {
+      showToast(err.message || "No previous session available to restore", "error");
     }
   }
 

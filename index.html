@@ -73,6 +73,10 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           Clear
         </button>
+        <button id="btnRestore" class="btn btn-secondary" title="Restore Previously Cleared Chat Session">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Restore
+        </button>
       </div>
     </div>
   </header>
@@ -286,6 +290,66 @@
         <div id="intentDistList" class="distribution-list">
           <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 22px 0;">
             No intents detected yet
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4: Sentiment & Tone Spectrum (Dynamic Pictorial Chart) -->
+      <div class="panel-card" id="sentimentChartPanel">
+        <div class="panel-title">
+          <span>Emotional Tone Spectrum</span>
+          <span class="panel-subtitle" id="chartEngagementBadge">Dynamic Radar</span>
+        </div>
+
+        <div class="sentiment-chart-container">
+          <!-- Interactive SVG Donut Graph -->
+          <div class="donut-chart-wrapper">
+            <svg class="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+              <circle class="donut-bg" cx="60" cy="60" r="48"></circle>
+              <circle id="donutSegmentPositive" class="donut-segment segment-positive" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentNeutral" class="donut-segment segment-neutral" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentConcerned" class="donut-segment segment-concerned" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentFrustrated" class="donut-segment segment-frustrated" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="donut-center-info">
+              <span id="donutCenterIcon" class="donut-center-icon">💡</span>
+              <span id="donutCenterTone" class="donut-center-tone">Neutral</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Spectrum Breakdown Grid -->
+          <div class="sentiment-spectrum-grid">
+            <div class="spectrum-item item-positive" id="specPositive">
+              <span class="spec-dot dot-positive"></span>
+              <span class="spec-name">Positive</span>
+              <span class="spec-count" id="countPositive">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-neutral" id="specNeutral">
+              <span class="spec-dot dot-neutral"></span>
+              <span class="spec-name">Neutral</span>
+              <span class="spec-count" id="countNeutral">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-concerned" id="specConcerned">
+              <span class="spec-dot dot-concerned"></span>
+              <span class="spec-name">Concerned</span>
+              <span class="spec-count" id="countConcerned">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-frustrated" id="specFrustrated">
+              <span class="spec-dot dot-frustrated"></span>
+              <span class="spec-name">Frustrated</span>
+              <span class="spec-count" id="countFrustrated">0 (0%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Academic Wellness Health Bar -->
+        <div class="academic-health-wrap">
+          <div class="health-header">
+            <span>Student Sentiment Clarity</span>
+            <span id="sentimentClarityPct" style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-cyan);">100%</span>
+          </div>
+          <div class="progress-track" style="height: 7px;">
+            <div id="sentimentClarityFill" class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #10b981, #38bdf8);"></div>
           </div>
         </div>
       </div>

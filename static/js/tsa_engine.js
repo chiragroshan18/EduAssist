@@ -545,6 +545,30 @@
       } catch (e) {}
     }
 
+    clear() {
+      if (this.conversation && this.conversation.length > 0) {
+        this.lastBackup = {
+          conversation: [...this.conversation],
+          intentCounts: { ...this.intentCounts },
+          toneCounts: { ...this.toneCounts },
+          sessionStarted: this.sessionStarted
+        };
+      }
+      this.reset();
+    }
+
+    restoreBackup() {
+      if (this.lastBackup && this.lastBackup.conversation && this.lastBackup.conversation.length > 0) {
+        this.conversation = [...this.lastBackup.conversation];
+        this.intentCounts = { ...this.lastBackup.intentCounts };
+        this.toneCounts = { ...this.lastBackup.toneCounts };
+        this.sessionStarted = this.lastBackup.sessionStarted || Date.now();
+        this.saveToStorage();
+        return true;
+      }
+      return false;
+    }
+
     addMessage(sender, text, intent = null, confidence = null, tone = null, keywords = [], followUps = []) {
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

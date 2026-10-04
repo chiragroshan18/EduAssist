@@ -121,8 +121,32 @@ class SessionState:
             }
 
     def clear(self):
-        """Clear conversation and reset analytics."""
-        self.reset()
+        """Clear conversation and reset analytics, preserving a backup for restoration."""
+        with self._lock:
+            if self.conversation:
+                self.backup_conversation = list(self.conversation)
+                self.backup_intent_counts = dict(self.intent_counts)
+                self.backup_tone_counts = dict(self.tone_counts)
+            self.conversation = []
+            self.intent_counts = {}
+            self.tone_counts = {
+                "positive": 0,
+                "neutral": 0,
+                "concerned": 0,
+                "frustrated": 0
+            }
+            self.session_started = time.time()
+            self.active_context = {}
+
+    def restore_backup(self) -> bool:
+        """Restore previously cleared conversation dialogue and analytics from backup."""
+        with self._lock:
+            if hasattr(self, 'backup_conversation') and self.backup_conversation:
+                self.conversation = list(self.backup_conversation)
+                self.intent_counts = dict(self.backup_intent_counts)
+                self.tone_counts = dict(self.backup_tone_counts)
+                return True
+            return False
 
     def load_demo(self):
         """Populate realistic fictional demonstration conversation for viva/evaluation."""

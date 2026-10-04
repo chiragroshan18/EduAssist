@@ -191,11 +191,34 @@
           this.setMode('client');
         }
       }
-      this.localState.reset();
+      this.localState.clear();
       this.activeContext = null;
       return {
         success: true,
         message: "Conversation history and analytics reset"
+      };
+    }
+
+    async restoreConversation() {
+      if (this.mode === 'flask') {
+        try {
+          const res = await fetch('./api/conversation/restore', { method: 'POST' });
+          if (res.ok) {
+            return await res.json();
+          }
+        } catch (e) {
+          this.setMode('client');
+        }
+      }
+      const restored = this.localState.restoreBackup();
+      if (!restored) {
+        throw new Error("No previous conversation backup available to restore");
+      }
+      return {
+        success: true,
+        message: "Conversation successfully restored",
+        messages: this.localState.getConversation(),
+        analytics: this.localState.getDashboard()
       };
     }
 

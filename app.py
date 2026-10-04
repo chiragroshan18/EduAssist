@@ -182,6 +182,23 @@ def clear_conversation():
     }), 200
 
 
+@app.route("/api/conversation/restore", methods=["POST"])
+def restore_conversation():
+    """Restore previously cleared conversation dialogue and analytics from runtime backup."""
+    restored = session_state.restore_backup()
+    if not restored:
+        return jsonify({
+            "success": False,
+            "error": "No cleared conversation backup found to restore"
+        }), 400
+    return jsonify({
+        "success": True,
+        "message": "Conversation history successfully restored",
+        "messages": session_state.get_conversation(),
+        "analytics": session_state.get_dashboard()
+    }), 200
+
+
 @app.route("/api/demo", methods=["POST"])
 def load_demo():
     """Load fictional demonstration dialogue into runtime state."""
