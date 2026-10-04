@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAssist — Intelligent Student Support & Academic Guidance Chatbot</title>
+  
+  <!-- Google Fonts Preconnect & Stylesheets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Relative paths ensure 100% compatibility with GitHub Pages repository subpaths -->
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/print.css" media="print">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 8.55L4.47 9 12 4.91 19.53 9 12 11.55zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z'/></svg>">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-icon-wrapper" id="brandLogo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <div class="brand-title-wrap">
+        <h1 class="brand-title">EduAssist <span style="font-size: 0.68rem; padding: 2px 8px; border-radius: 999px; background: rgba(99, 102, 241, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 800; letter-spacing: 0.5px;">TSA AI</span></h1>
+        <span class="brand-tagline">Ask. Understand. Get Guidance.</span>
+      </div>
+    </div>
+
+    <div class="header-status-controls">
+      <!-- Active Processing Engine Badge with Radar Ping -->
+      <div id="engineModeBadge" class="engine-badge" title="Click to inspect Dual-Engine Architecture">
+        <span class="radar-wrapper">
+          <span class="radar-ping"></span>
+          <span class="radar-dot"></span>
+        </span>
+        <span id="engineModeText">Connecting...</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Audio Chime Toggle -->
+        <button id="btnSoundToggle" class="btn-icon-toggle active" title="Toggle Sound Feedback" aria-label="Toggle Sound">
+          <svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <button id="btnThemeToggle" class="btn-icon-toggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+          <svg id="themeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+
+        <button id="btnAnalyze" class="btn btn-secondary" title="Synthesize Conversation & Counseling Report">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Analyze
+        </button>
+        <button id="btnDemo" class="btn btn-secondary" title="Load Fictional Realistic Demo Dialogue">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Demo
+        </button>
+        <button id="btnPrint" class="btn btn-secondary" title="Export or Print A4 Academic Report">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Report
+        </button>
+        <button id="btnClear" class="btn btn-danger-outline" title="Clear Chat & Reset Runtime Session">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear
+        </button>
+        <button id="btnRestore" class="btn btn-secondary" title="Restore Previously Cleared Chat Session">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Restore
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Printable Header Container (STRICTLY HIDDEN ON SCREEN, Used Exclusively when Printing to A4) -->
+  <div class="print-report-header" style="display: none;">
+    <div class="print-report-title">EduAssist Academic Guidance & Support Report</div>
+    <div class="print-report-subtitle">Generated automatically by EduAssist Intelligent Counseling System</div>
+    <div class="print-meta-grid">
+      <div class="print-meta-item">
+        <div class="print-meta-label">Date & Time</div>
+        <div id="printDate" class="print-meta-val">-</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Total Messages</div>
+        <div id="printTotalMsgs" class="print-meta-val">0</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Primary Topic</div>
+        <div id="printPrimaryIntent" class="print-meta-val">-</div>
+      </div>
+      <div class="print-meta-item">
+        <div class="print-meta-label">Dominant Tone</div>
+        <div id="printTone" class="print-meta-val">-</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Workspace -->
+  <main class="main-container">
+    
+    <!-- Left Column: Chat Workspace -->
+    <section class="chat-workspace">
+      <div class="chat-banner">
+        <div class="chat-banner-info">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Academic Guidance Dialogue
+        </div>
+        <span class="chat-banner-badge" id="sessionStatusBadge">Active Session</span>
+      </div>
+
+      <!-- Message History Container -->
+      <div id="chatMessages" class="chat-messages">
+        <!-- Empty State Placeholder with Quick-Start Interactive Prompts -->
+        <div id="emptyState" class="chat-empty-state">
+          <div class="empty-state-orb">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h2 class="empty-state-title">Welcome to EduAssist</h2>
+          <p class="empty-state-desc">
+            Your intelligent student copilot for exam revision, study scheduling, assignment structure, laboratory preparation, and academic regulations.
+          </p>
+
+          <div class="empty-prompts-grid">
+            <div class="empty-prompt-card" data-prompt="How should I prepare for my upcoming exam?">
+              <span class="prompt-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Exam Preparation
+              </span>
+              <span class="prompt-card-desc">Revision cycles, syllabus breakdown & past papers</span>
+            </div>
+            <div class="empty-prompt-card" data-prompt="Help me create a daily study schedule and timetable.">
+              <span class="prompt-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Study Planning
+              </span>
+              <span class="prompt-card-desc">Pomodoro technique, time blocking & task priority</span>
+            </div>
+            <div class="empty-prompt-card" data-prompt="I need guidance on structuring my assignment and references.">
+              <span class="prompt-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Assignment Help
+              </span>
+              <span class="prompt-card-desc">Rubric compliance, citations & report formatting</span>
+            </div>
+            <div class="empty-prompt-card" data-prompt="What is the minimum attendance percentage required for exams?">
+              <span class="prompt-card-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Attendance Rules
+              </span>
+              <span class="prompt-card-desc">Shortage limits, condonation & medical leave</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typingIndicator" class="typing-indicator">
+        <div class="typing-dots">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+        <span>EduAssist is analyzing your query...</span>
+      </div>
+
+      <!-- Suggested Questions Bar -->
+      <div class="suggested-bar">
+        <span class="suggested-label">Quick Actions:</span>
+        <button class="suggested-btn" data-query="How should I prepare for exams?">How should I prepare for exams?</button>
+        <button class="suggested-btn" data-query="Help me create a study plan.">Help me create a study plan.</button>
+        <button class="suggested-btn" data-query="I need assignment guidance.">I need assignment guidance.</button>
+        <button class="suggested-btn" data-query="How can I prepare for my lab?">How can I prepare for my lab?</button>
+        <button class="suggested-btn" data-query="How can I improve my attendance?">How can I improve my attendance?</button>
+      </div>
+
+      <!-- Message Composer -->
+      <footer class="chat-composer">
+        <div class="composer-input-row">
+          <input 
+            type="text" 
+            id="messageInput" 
+            class="composer-input" 
+            placeholder="Ask an academic question (e.g. How to prepare for my exam?)..." 
+            maxlength="1000"
+            autocomplete="off"
+          />
+          <button id="btnSend" class="btn-send" title="Send Question (Enter)">
+            <span>Send</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="composer-meta">
+          <span>Press <strong>Enter</strong> to send &bull; Shift+Enter for new line</span>
+          <span id="charCounter" style="font-family: var(--font-mono);">0 / 1000</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Right Column: Live Text Analysis & Dynamic Dashboard -->
+    <aside class="analytics-workspace">
+      
+      <!-- Panel 1: Live Text Analysis Inspector -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Text Analysis Inspector</span>
+          <span class="panel-subtitle">Rule-Based TSA</span>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Last Analyzed Message</div>
+          <div id="inspectMessage" class="inspect-msg-box">Awaiting student inquiry...</div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Detected Intent</div>
+          <div id="inspectIntent" class="inspect-val">
+            <span class="tag-badge tag-intent">None</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Rule-Based Confidence</div>
+          <div class="confidence-bar-wrap">
+            <div class="progress-track">
+              <div id="confidenceFill" class="progress-fill" style="width: 0%;"></div>
+            </div>
+            <span id="confidenceValText" class="confidence-val-text">0%</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Detected Tone</div>
+          <div id="inspectTone" class="inspect-val">
+            <span class="tag-badge tag-tone-neutral">💡 Neutral</span>
+          </div>
+        </div>
+
+        <div class="analysis-inspect-row">
+          <div class="inspect-label">Extracted Keywords</div>
+          <div id="inspectKeywords" class="keyword-tags-wrap">
+            <span class="keyword-tag">None</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Live Conversation Statistics -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Session Statistics</span>
+          <span class="panel-subtitle" id="statDuration">0s active</span>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Messages</span>
+            <span id="statTotalMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Student Queries</span>
+            <span id="statStudentMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Bot Responses</span>
+            <span id="statBotMsgs" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Dominant Tone</span>
+            <span id="statDominantTone" class="stat-value" style="font-size: 1.15rem;">Neutral</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Live Intent Analytics Distribution -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Intent Distribution</span>
+          <span class="panel-subtitle">Dynamic Analytics</span>
+        </div>
+
+        <div id="intentDistList" class="distribution-list">
+          <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 22px 0;">
+            No intents detected yet
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4: Sentiment & Tone Spectrum (Dynamic Pictorial Chart) -->
+      <div class="panel-card" id="sentimentChartPanel">
+        <div class="panel-title">
+          <span>Emotional Tone Spectrum</span>
+          <span class="panel-subtitle" id="chartEngagementBadge">Dynamic Radar</span>
+        </div>
+
+        <div class="sentiment-chart-container">
+          <!-- Interactive SVG Donut Graph -->
+          <div class="donut-chart-wrapper">
+            <svg class="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+              <circle class="donut-bg" cx="60" cy="60" r="48"></circle>
+              <circle id="donutSegmentPositive" class="donut-segment segment-positive" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentNeutral" class="donut-segment segment-neutral" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentConcerned" class="donut-segment segment-concerned" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+              <circle id="donutSegmentFrustrated" class="donut-segment segment-frustrated" cx="60" cy="60" r="48" stroke-dasharray="0 301.6" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="donut-center-info">
+              <span id="donutCenterIcon" class="donut-center-icon">💡</span>
+              <span id="donutCenterTone" class="donut-center-tone">Neutral</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Spectrum Breakdown Grid -->
+          <div class="sentiment-spectrum-grid">
+            <div class="spectrum-item item-positive" id="specPositive">
+              <span class="spec-dot dot-positive"></span>
+              <span class="spec-name">Positive</span>
+              <span class="spec-count" id="countPositive">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-neutral" id="specNeutral">
+              <span class="spec-dot dot-neutral"></span>
+              <span class="spec-name">Neutral</span>
+              <span class="spec-count" id="countNeutral">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-concerned" id="specConcerned">
+              <span class="spec-dot dot-concerned"></span>
+              <span class="spec-name">Concerned</span>
+              <span class="spec-count" id="countConcerned">0 (0%)</span>
+            </div>
+            <div class="spectrum-item item-frustrated" id="specFrustrated">
+              <span class="spec-dot dot-frustrated"></span>
+              <span class="spec-name">Frustrated</span>
+              <span class="spec-count" id="countFrustrated">0 (0%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Academic Wellness Health Bar -->
+        <div class="academic-health-wrap">
+          <div class="health-header">
+            <span>Student Sentiment Clarity</span>
+            <span id="sentimentClarityPct" style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-cyan);">100%</span>
+          </div>
+          <div class="progress-track" style="height: 7px;">
+            <div id="sentimentClarityFill" class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #10b981, #38bdf8);"></div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ============================================================================
+       Interactive Modals
+       ============================================================================ -->
+
+  <!-- Modal 1: Clear Confirmation -->
+  <div id="modalClear" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Clear Conversation History</h3>
+        <button class="btn-close-modal" data-close-modal="modalClear">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to clear the entire chat conversation?</p>
+        <p style="margin-top: 10px; color: var(--text-muted);">This action resets runtime conversation logs, intent distribution metrics, and active session statistics.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal="modalClear">Cancel</button>
+        <button id="btnConfirmClear" class="btn btn-primary" style="background: linear-gradient(135deg, #f43f5e, #be123c); box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Conversation Analysis & Summary -->
+  <div id="modalAnalysis" class="modal-overlay">
+    <div class="modal-box" style="max-width: 660px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Conversation Analysis & Synthesis</h3>
+        <button class="btn-close-modal" data-close-modal="modalAnalysis">&times;</button>
+      </div>
+      <div id="analysisModalBody" class="modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button id="btnExportAnalysis" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Report
+        </button>
+        <button class="btn btn-secondary" data-close-modal="modalAnalysis">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Dual-Engine Architecture Information -->
+  <div id="modalEngineInfo" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">EduAssist Architecture & Engine Mode</h3>
+        <button class="btn-close-modal" data-close-modal="modalEngineInfo">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>EduAssist Dual-Engine Architecture:</strong></p>
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-card); border-radius: 8px; padding: 14px;">
+            <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">Mode 1 &mdash; Full Flask Application</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+              Browser (HTML/CSS/JS) &rarr; Fetch API &rarr; Flask REST API &rarr; Python NLP Preprocessing & Intent Engine. Used during local development and cloud server deployments.
+            </div>
+          </div>
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-card); border-radius: 8px; padding: 14px;">
+            <div style="font-weight: 800; color: #10b981; margin-bottom: 4px;">Mode 2 &mdash; GitHub Pages Static Demo</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+              Static Browser &rarr; Client-Side TSA Engine (Vanilla JavaScript). Reproduces 100% of the identical tokenization, intent rules, tone analysis, and confidence scoring without needing a running Python backend on static GitHub Pages hosting.
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 14px; background: rgba(99, 102, 241, 0.18); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 8px; font-size: 0.88rem;">
+          <strong>Currently Active Engine:</strong> <span id="currentEngineDetailsText" style="color: var(--accent-cyan); font-weight: 800;">Detecting...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal="modalEngineInfo">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <!-- Relative paths ensure 100% GitHub Pages compatibility -->
+  <script src="./js/tsa_engine.js"></script>
+  <script src="./js/api_client.js"></script>
+  <script src="./js/app.js"></script>
+
+</body>
+</html>
