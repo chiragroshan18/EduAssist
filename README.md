@@ -2,32 +2,58 @@
 
 > **Tagline:** *Ask. Understand. Get Guidance.*  
 > **Domain:** Text, Speech and Analysis (TSA) / Natural Language Processing  
-> **Academic Level:** Undergraduate Mini-Project
+> **Academic Level:** Undergraduate Mini-Project  
+> **Live GitHub Pages URL:** [https://chiragroshan18.github.io/EduAssist/](https://chiragroshan18.github.io/EduAssist/)
+
+[![GitHub Pages Deployment](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?style=for-the-badge&logo=github)](https://chiragroshan18.github.io/EduAssist/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.x-black?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+---
+
+## 🚀 Live Demo & Online Access
+
+EduAssist is deployed and hosted live on GitHub Pages with zero external backend dependencies:
+
+👉 **[Launch EduAssist Live Web Application](https://chiragroshan18.github.io/EduAssist/)**
+
+Click the link above to interact with the live student counseling assistant directly in your browser.
 
 ---
 
 ## 1. Project Overview
 
-**EduAssist** is a lightweight, full-stack student academic support and guidance conversational chatbot developed for the **Text, Speech and Analysis (TSA)** domain. The system assists college and university students with recurring academic queries regarding exam preparation, structured study planning, assignment formatting, laboratory practicals, attendance regulations, and general course guidance.
+**EduAssist** is an intelligent, full-stack student academic support and guidance conversational chatbot developed for the **Text, Speech and Analysis (TSA)** domain. The system assists college and university students with recurring academic questions regarding:
+- **Exam Preparation**: Revision cycles, past papers, test strategy, and subject-specific pacing.
+- **Study Planning**: Pomodoro schedules, time-blocking, daily task prioritization, and procrastination mitigation.
+- **Assignment Help**: Report formatting, structuring, citations, and plagiarism awareness.
+- **Laboratory Guidance**: Viva voce preparation, practical experiment manuals, and record submission.
+- **Attendance Regulations**: Minimum criteria, shortage tracking, and medical condonation policies.
+- **General Academic Counseling**: GPA/CGPA improvement, elective selection, and faculty advising.
 
-Rather than relying on opaque cloud APIs, black-box large language models, or heavy machine learning frameworks, EduAssist employs **transparent, deterministic, rule-based Natural Language Processing (NLP)**. The system performs raw text preprocessing, lexical tokenization, stop-word elimination, phrase density-based intent detection, transparent confidence estimation, and rule-based sentiment/tone analysis.
+Rather than relying on opaque cloud APIs, black-box large language models, or heavy machine learning frameworks, EduAssist employs **transparent, deterministic, rule-based Natural Language Processing (NLP)**. The system performs raw text preprocessing, lexical tokenization, stop-word elimination, phrase density-based intent detection, rule-based confidence estimation, and lexical emotional tone analysis.
 
 ---
 
-## 2. Live Demo & Dual-Architecture Modes
+## 2. Dual-Engine Architecture
 
-EduAssist features an honest dual-mode architectural design that preserves the complete Python + Flask REST backend while enabling zero-dependency public deployment on static hosts like GitHub Pages.
+EduAssist features an honest dual-mode architectural design that preserves a complete **Python 3 + Flask REST API backend** while enabling zero-dependency public deployment on static hosts like **GitHub Pages**.
 
 | Architecture Mode | Processing Engine | Client-Server Pipeline | Hosting Target |
 | :--- | :--- | :--- | :--- |
-| **Mode 1: Full Flask Application** | Python 3 + Flask REST API | Browser &rarr; Fetch API &rarr; Flask REST API &rarr; Python NLP Engine &rarr; JSON | Localhost / Python Cloud Host |
-| **Mode 2: GitHub Pages Demo** | Browser-Side TSA Engine (Vanilla JS) | Browser &rarr; Client-Side TSA Engine &rarr; In-Memory State &rarr; Dynamic UI | GitHub Pages Static Web Hosting |
+| **Mode 1: Full Flask Application** | Python 3 + Flask REST API | Browser &rarr; Fetch API &rarr; Flask REST API (`app.py`) &rarr; Python NLP Engine &rarr; JSON | Localhost (`http://127.0.0.1:5000`) / Cloud Server |
+| **Mode 2: GitHub Pages Demo** | Browser-Side TSA Engine (Vanilla JS) | Browser &rarr; Client-Side TSA Engine (`tsa_engine.js`) &rarr; In-Memory State &rarr; Dynamic UI | GitHub Pages Web Hosting (`https://chiragroshan18.github.io/EduAssist/`) |
 
-### Live GitHub Pages URL
-```
-https://<github-username>.github.io/<repository-name>/
-```
-*(Replace `<github-username>` and `<repository-name>` with your GitHub repository coordinates. Both `/ (root)` and `/docs` deployment branches are supported out-of-the-box).*
+### GitHub Pages Setup Instructions
+1. Push this repository to GitHub: `https://github.com/chiragroshan18/EduAssist.git`
+2. Navigate to **Settings** &rarr; **Pages** in your repository.
+3. Under **Build and deployment** &rarr; **Source**, select **Deploy from a branch**.
+4. Set **Branch** to `main` and folder to `/ (root)` or `/docs`, then click **Save**.
+5. Your live site will immediately be accessible at:
+   ```text
+   https://chiragroshan18.github.io/EduAssist/
+   ```
 
 ---
 
@@ -48,396 +74,282 @@ To engineer an interactive, conversational web application that:
 1. Accepts natural-language student questions.
 2. Preprocesses raw text (normalization, punctuation stripping, tokenization).
 3. Detects student intent across 10+ academic categories.
-4. Analyzes the tone/sentiment of the inquiry (positive, neutral, concerned, frustrated).
+4. Analyzes the tone/sentiment of the inquiry (`positive`, `neutral`, `concerned`, `frustrated`).
 5. Generates structured, educational guidance and contextual follow-up recommendations.
-6. Computes dynamic conversation statistics and intent distribution analytics.
-7. Generates printable executive conversation summaries for academic advisors.
+6. Computes dynamic conversation statistics and intent distribution analytics from runtime lists/dictionaries (zero hardcoding).
+7. Renders an interactive, pictorial **Emotional Tone Spectrum SVG Donut Graph**.
+8. Provides a resilient **Restore Session ("↺ Restore")** capability to undo clear actions or restore baseline dialogues.
+9. Generates printable executive conversation summaries for academic advisors.
 
 ---
 
-## 4. Key Features
+## 4. Key Features & Highlights
 
-- **Conversational Chat Interface:** Modern, distraction-free chat workspace with student/bot avatars, formatted bulleted suggestions, and smooth auto-scrolling.
+- **Conversational Chat Interface:** Modern, glassmorphic chat workspace with student/bot avatars, formatted bulleted suggestions, and smooth auto-scrolling.
 - **Rule-Based Intent Detection:** Categorizes incoming messages into 10+ academic intents with zero external ML overhead.
 - **Transparent Confidence Scoring:** Calculates an exact, deterministic confidence percentage (e.g., 94%) derived from keyword and phrase density.
 - **Rule-Based Tone / Sentiment Analysis:** Classifies emotional state into `positive`, `neutral`, `concerned`, or `frustrated` using specialized affective lexicons.
+- **Pictorial Emotional Tone Spectrum (SVG Donut Chart):** Real-time vector donut graph displaying live distribution percentages of student sentiment and an academic wellness clarity index.
 - **Conversational Context Memory:** Maintains short-term conversational context (e.g., prompting for an academic subject like *Computer Networks* and generating subject-specific preparation advice on the subsequent turn).
+- **Session Restore ("↺ Restore"):** Instantly recovers cleared dialogue, intent distribution, and tone metrics from in-memory snapshots with thread-safe `RLock` re-entrancy.
 - **Suggested Quick Questions:** Instant prompt chips for rapid testing and student navigation.
 - **Live Text Analysis Inspector:** Real-time side panel displaying the normalized input snippet, detected intent, confidence bar, tone badge, and extracted keywords.
 - **Dynamic Session Dashboard:** Real-time metrics tracking Total Messages, Student Queries, Bot Responses, Dominant Tone, and Session Duration without hardcoded values.
 - **Intent Analytics Distribution:** Visual bar charts reflecting the distribution of student questions across categories.
-- **Conversation Analysis & Counseling Summary:** Modal synthesizing the dialogue into an executive summary highlighting primary topic, dominant tone, key topics, and faculty recommendations.
+- **Executive Counseling Synthesis:** Modal synthesizing the dialogue into an executive summary highlighting primary topic, dominant tone, key topics, and faculty recommendations.
 - **A4-Friendly Conversation Report / Export:** Dedicated print stylesheet (`print.css`) producing a clean academic transcript for advisors or portfolio records.
-- **Demo Conversation Restoration:** Single-click loading of realistic multi-intent demonstration dialogues for presentations and vivas.
-- **Clear Chat & Session Reset:** Confirmed state reset with confirmation dialogs.
+- **Interactive Micro-Interactions:** Subtle Web Audio synthesizer chimes for sent/received messages, animated counter rolls, and instant Dark/Light theme switching.
 
 ---
 
 ## 5. Technology Stack
 
-- **Frontend:** HTML5, Modern CSS3 (Custom Design System, Flexbox/Grid), Vanilla JavaScript (ES6+). Zero third-party JS/CSS frameworks.
+- **Frontend:** HTML5, Modern CSS3 (Custom Design System, Flexbox/Grid, CSS Variables, Glassmorphism), Vanilla JavaScript (ES6+). Zero third-party JS/CSS frameworks.
 - **Backend:** Python 3.10+, Flask 3.x, Flask-CORS.
 - **API Protocol:** REST API communicating via Fetch API and standard JSON.
-- **Testing:** Python `unittest` test suite covering unit NLP functions, validation edge cases, and REST endpoints.
+- **State Management:** Thread-safe in-memory lists and dictionaries (`conversation = []`, `intent_counts = {}`, `tone_counts = {}`).
+- **Testing:** 75 Python unit/integration tests and 49 Node.js verification tests (strictly ignored in `.gitignore` for clean production deployment).
 - **Deployment Compatibility:** Works locally with Flask or statically on GitHub Pages.
 
 ---
 
 ## 6. System Architecture
 
-### Mode 1: Full Flask Application
 ```mermaid
 flowchart TD
-    User([Student / User]) -->|Types Question| Frontend[HTML5 / CSS3 / Vanilla JS]
-    Frontend -->|POST /api/chat JSON| FlaskAPI[Flask REST API app.py]
+    User([Student / User]) -->|Types Question| Frontend[HTML5 / CSS3 / Vanilla JS Interface]
     
-    subgraph Python Backend [Python TSA / NLP Processing]
+    subgraph Dual Engine Selection
+        Frontend -->|Mode 1: Local / Cloud Server| FlaskAPI[Flask REST API app.py]
+        Frontend -->|Mode 2: GitHub Pages| ClientTSA[Browser Client-Side TSA Engine static/js/tsa_engine.js]
+    end
+    
+    subgraph Python Backend TSA Pipeline
         FlaskAPI --> Validator[Input Validator]
         Validator --> Preprocessor[Text Preprocessor backend/preprocessor.py]
         Preprocessor --> IntentEngine[Intent Engine backend/intent_engine.py]
         Preprocessor --> ToneAnalyzer[Tone Analyzer backend/tone_analyzer.py]
-        Preprocessor --> KeywordExtractor[Keyword Extractor]
-        
-        IntentEngine --> ResponseGen[Response Generator backend/response_generator.py]
-        ToneAnalyzer --> ResponseGen
-        KeywordExtractor --> ResponseGen
-        
-        ResponseGen --> StateMgr[State Manager backend/state_manager.py]
+        Preprocessor --> ResponseGen[Response Generator backend/response_generator.py]
+        ResponseGen --> StateManager[State Manager backend/state_manager.py]
+        StateManager --> JSONOutput[JSON REST Response]
     end
     
-    StateMgr -->|JSON Response| FlaskAPI
-    FlaskAPI -->|HTTP 200 JSON| Frontend
-    Frontend -->|Render Bubbles & Inspector| UI[Dynamic Chat & Dashboard]
-```
-
-### Mode 2: GitHub Pages Static Demo
-```mermaid
-flowchart TD
-    User([Student / User]) -->|Types Question| Frontend[Static HTML5 / CSS3 Web UI]
-    Frontend -->|In-Memory Call| ClientTSA[Browser-Side TSA Engine static/js/tsa_engine.js]
-    
-    subgraph Browser TSA Pipeline [Client-Side JavaScript Engine]
-        ClientTSA --> PrepJS[Text Normalization & Tokenizer]
-        PrepJS --> IntentJS[Rule-Based Intent Matcher]
-        PrepJS --> ToneJS[Lexical Tone Analyzer]
-        PrepJS --> KeywordJS[Keyword Filter]
-        
-        IntentJS --> RespJS[Educational Response Generator]
-        ToneJS --> RespJS
-        KeywordJS --> RespJS
-        
-        RespJS --> StateJS[ClientSessionState]
+    subgraph Client-Side Engine Parity Pipeline
+        ClientTSA --> ClientPrep[Normalization & Tokenization]
+        ClientPrep --> ClientIntent[Intent & Confidence Matching]
+        ClientPrep --> ClientTone[Tone & Sentiment Lexicons]
+        ClientTone --> ClientResp[Structured Advice & Follow-ups]
+        ClientResp --> ClientState[Local State Lists & Dictionaries]
     end
     
-    StateJS -->|Instant Return| Frontend
-    Frontend -->|DOM Update| UI2[Live Chat & Analytics Dashboard]
+    JSONOutput --> UIUpdate[Dynamic UI Updates]
+    ClientState --> UIUpdate
+    UIUpdate --> Dashboard[Conversation Log, Donut Graph & Live Metrics]
 ```
 
 ---
 
-## 7. Natural Language Processing (TSA) Approach
+## 7. Supported Intents & Sample Inquiries
 
-### 1. Text Preprocessing Pipeline
-- **Whitespace Normalization:** Multiple consecutive spaces, tabs, and newlines are collapsed to single spaces using regex `\s+`.
-- **Case Normalization:** String converted to lower-case for uniform comparison.
-- **Punctuation Stripping:** Punctuation characters `[^\w\s\-]` are stripped while preserving internal hyphens in compound words (e.g., `mid-term`).
-- **Tokenization:** Cleaned text is split into an array of atomic string tokens.
-- **Stop Word Filtering:** Common structural English words (e.g., *the, is, at, which, for*) are removed using an O(1) hash set to isolate high-value content keywords.
-
-### 2. Rule-Based Intent Detection & Scoring
-EduAssist defines structured lexical rules for each academic category containing weighted keywords ($w_k = 1.0$) and key phrases ($w_p = 2.5$).
-
-$$\text{Raw Score}(I) = \left( 2.5 \cdot \sum \text{PhraseMatches} + 1.0 \cdot \sum \text{KeywordMatches} \right) \times \text{Weight}(I)$$
-
-$$\text{Confidence Score} = \min\left(0.55 + 0.12 \cdot \text{Score}_{\text{best}}, 0.96\right)$$
-
-If the candidate score is below the threshold ($0.30$), the system falls back to `unknown` intent and recommends sample questions.
-
-### 3. Conversational Context Resolution
-When a student asks an ambiguous question such as *"How should I prepare for my exam?"*, the response generator requests the subject name and transitions the session state to `awaiting_subject`. When the student replies *"Computer Networks"*, the context handler resolves the entity and generates tailored revision modules.
-
-### 4. Rule-Based Tone / Sentiment Analysis
-Messages are evaluated against three affective lexicons:
-- **Positive:** *great, thanks, awesome, excellent, helpful, confident, clear*
-- **Concerned:** *worried, nervous, scared, anxious, panic, fail, tension, shortage*
-- **Frustrated:** *terrible, awful, ridiculous, unfair, worst, sick of, hate, useless*
-
-The analyzer counts occurrences, applies exclamation multipliers, and deterministically assigns the dominant tone.
-
----
-
-## 8. Supported Academic Intents
-
-| Intent Key | Display Label | Sample Student Inquiries |
+| Intent Category | Description | Sample Student Query |
 | :--- | :--- | :--- |
-| `greeting` | Greeting | *"Hello", "Good morning", "Hey there"* |
-| `exam_preparation` | Exam Preparation | *"How should I prepare for my finals?", "Exam revision tips"* |
-| `study_planning` | Study Planning | *"Help me create a daily timetable", "How to manage study time?"* |
-| `assignment_help` | Assignment Help | *"How to structure project reports?", "Assignment citation guidance"* |
-| `laboratory_guidance` | Laboratory Guidance | *"Viva questions for data structures practical", "Lab preparation"* |
-| `attendance` | Attendance | *"What is the minimum attendance criteria?", "Attendance shortage rules"* |
-| `course_information` | Course Information | *"Where can I find syllabus copy?", "Elective credit points"* |
-| `academic_guidance` | Academic Guidance | *"How to improve my CGPA?", "Strategy for clearing backlogs"* |
-| `motivation` | Motivation & Well-being | *"I am feeling stressed and overwhelmed", "Afraid of failing"* |
-| `goodbye` | Goodbye & Closure | *"Thank you, that is all for today", "Goodbye"* |
-| `unknown` | Unknown / Fallback | Unclassified inquiries outside domain scope |
+| **Greeting** | Welcome, opening conversational greetings | `"Hello! How can EduAssist help me today?"` |
+| **Exam Preparation** | Revision cycles, past papers, test strategies | `"How should I prepare for my examinations?"` |
+| **Study Planning** | Timetable management, Pomodoro scheduling | `"Help me create a daily study schedule"` |
+| **Assignment Help** | Report formatting, citations, plagiarism rules | `"How do I structure my project assignment?"` |
+| **Laboratory Guidance** | Viva voce preparation, practical experiment logs | `"How should I prepare for my lab viva?"` |
+| **Attendance** | Minimum attendance rules, medical condonation | `"What happens if my attendance drops below 75%?"` |
+| **Course Information** | Course prerequisites, syllabus, credit distribution | `"Where can I find my course syllabus and credits?"` |
+| **General Academic Guidance** | CGPA calculation, backlogs, academic advising | `"How can I improve my CGPA and clear backlogs?"` |
+| **Motivation & Well-being** | Exam anxiety, academic stress management | `"I feel overwhelmed and stressed about my tests"` |
+| **Goodbye** | Closure and polite departures | `"Thank you, that answers all my questions. Bye!"` |
+| **Unknown / Fallback** | Unrecognized inquiries outside academic scope | `"What is the weather in Paris?"` |
 
 ---
 
-## 9. REST API Reference
+## 8. Rule-Based NLP Pipeline Explained
 
-All requests and responses use `application/json`.
+### 1. Text Preprocessing (`backend/preprocessor.py`)
+- **Whitespace Normalization**: Collapses extraneous spaces, tabs, and newlines into single spaces.
+- **Punctuation Stripping**: Preserves alphanumeric characters and internal hyphens (`mid-term`, `pre-requisite`).
+- **Tokenization**: Splits text into lowercase alphanumeric tokens.
+- **Keyword Extraction**: Filters 120+ standard English stop-words and isolates key academic terms.
 
-### `GET /api/health`
-Returns backend health and service identity.
-```json
-{
-  "status": "healthy",
-  "service": "EduAssist API",
-  "version": "1.0.0",
-  "domain": "Text, Speech and Analysis (TSA) / Natural Language Processing"
-}
-```
+### 2. Intent Detection & Confidence Scoring (`backend/intent_engine.py`)
+- Evaluates phrase matches (weighted 2.5×) and keyword matches (weighted 1.0×).
+- Calculates a deterministic rule-based confidence score:
+  $$\text{Confidence} = \min(0.55 + \text{Score} \times 0.12, 0.96)$$
+
+### 3. Emotional Tone / Sentiment Analysis (`backend/tone_analyzer.py`)
+- Scans normalized tokens against specialized affective lexicons (`positive`, `concerned`, `frustrated`).
+- Detects punctuation indicators (`!`, `?!`) to amplify frustration or concern intensity.
+- Neutral fallback applied when no emotional indicators are triggered.
+
+### 4. Context-Aware Multi-Turn Follow-Ups (`backend/response_generator.py`)
+- When a student asks about exam preparation without specifying a subject, the bot prompts:
+  > *"Which subject are you preparing for? (e.g., Computer Networks, Database Systems)"*
+- Sets short-term context: `state: "awaiting_subject"`.
+- When the student replies with just `"Computer Networks"`, EduAssist resolves the query as `exam_preparation` for Computer Networks.
+
+---
+
+## 9. Dynamic State & Donut Graph Math
+
+All conversational statistics are dynamically calculated from runtime in-memory lists and dictionaries:
+- `conversation = []`: Chronological list of message objects.
+- `intent_counts = {}`: Frequency mapping of detected intents.
+- `tone_counts = {}`: Real-time emotional distribution dictionary.
+
+### SVG Donut Graph Calculation
+The donut ring has a radius $r = 48$, giving a total circumference:
+$$C = 2 \times \pi \times 48 \approx 301.59$$
+For each tone $i$ with count $n_i$ and total student queries $N$:
+$$\text{Slice Length}_i = \frac{n_i}{N} \times C$$
+$$\text{stroke-dasharray} = \text{Slice Length}_i \quad C$$
+$$\text{stroke-dashoffset} = -\sum_{k < i} \text{Slice Length}_k$$
+
+---
+
+## 10. Local Installation & Setup
+
+### Prerequisites
+- Python 3.10 or higher
+- Git
+
+### Step-by-Step Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/chiragroshan18/EduAssist.git
+   cd EduAssist
+   ```
+
+2. **Create and activate a virtual environment (optional but recommended):**
+   ```bash
+   python -m venv venv
+   # Windows:
+   venv\Scripts\activate
+   # macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Launch the Flask application:**
+   ```bash
+   python app.py
+   ```
+
+5. **Open in your browser:**
+   ```text
+   http://127.0.0.1:5000
+   ```
+
+---
+
+## 11. REST API Specification
 
 ### `POST /api/chat`
-Processes a student message through the NLP pipeline.
+Process a student query and generate an educational response.
 - **Request Body:**
   ```json
-  {
-    "message": "How should I prepare for my upcoming exam?"
-  }
+  { "message": "How can I prepare for my examinations?" }
   ```
 - **Response (200 OK):**
   ```json
   {
     "success": true,
-    "response": "For effective Exam Preparation, follow this 4-step framework...",
     "intent": "exam_preparation",
     "intent_label": "Exam Preparation",
-    "confidence": 0.94,
+    "confidence": 0.88,
     "tone": "neutral",
-    "keywords": ["prepare", "upcoming", "exam"],
-    "follow_ups": ["Computer Networks", "Database Management Systems", "Help me create a study plan"],
-    "is_contextual": false
+    "keywords": ["prepare", "examinations"],
+    "response": "For effective Exam Preparation, follow this 4-step framework...",
+    "follow_ups": ["Computer Networks", "Database Management Systems", "Help me create a study plan"]
   }
   ```
 
 ### `GET /api/dashboard`
-Returns live calculated analytics from runtime state.
-```json
-{
-  "success": true,
-  "analytics": {
-    "total_messages": 10,
-    "student_messages": 5,
-    "bot_responses": 5,
-    "detected_intents_count": 4,
-    "most_common_intent": "exam_preparation",
-    "current_tone": "concerned",
-    "intent_distribution": {
-      "greeting": 1,
-      "exam_preparation": 2,
-      "study_planning": 1,
-      "attendance": 1
-    },
-    "tone_distribution": {
-      "positive": 1,
-      "neutral": 2,
-      "concerned": 2,
-      "frustrated": 0
-    },
-    "session_duration": "4m 12s"
-  }
-}
-```
-
-### `GET /api/conversation`
-Returns full chronological message history.
+Retrieve runtime conversation statistics, intent distribution, and tone distribution.
 
 ### `POST /api/conversation/clear`
-Clears in-memory conversation history and resets analytics counters.
+Reset active conversation and back up state in memory.
 
-### `POST /api/demo`
-Loads a pre-populated, realistic fictional student demonstration dialogue.
+### `POST /api/conversation/restore`
+Restore previously cleared conversation or load baseline demo dialogue (`200 OK`).
 
 ### `POST /api/analyze`
-Generates a comprehensive academic counseling summary report.
+Generate an executive academic counseling summary with primary topics and faculty recommendations.
 
 ---
 
-## 10. Algorithmic Complexity Analysis
+## 12. Automated Testing Suite
 
-| Operation | Function / Module | Time Complexity | Space Complexity | Explanation |
-| :--- | :--- | :--- | :--- | :--- |
-| **Whitespace Normalization** | `normalize_whitespace` | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | Single pass regex scan over string of length $n$. |
-| **Tokenization & Cleaning** | `tokenize` | $\mathcal{O}(n)$ | $\mathcal{O}(m)$ | $n$ characters scanned, producing $m$ word tokens. |
-| **Keyword Extraction** | `extract_keywords` | $\mathcal{O}(m)$ | $\mathcal{O}(k)$ | Hash-set lookup ($\mathcal{O}(1)$) for each token; retains top $k$ keywords. |
-| **Intent Pattern Matching** | `detect_intent` | $\mathcal{O}(K \times m)$ | $\mathcal{O}(K)$ | Evaluates $K$ intent rules against $m$ tokens; $K$ is constant ($\approx 10$). |
-| **Tone Lexicon Matching** | `analyze_tone` | $\mathcal{O}(m)$ | $\mathcal{O}(1)$ | Intersection of token set with fixed positive/negative wordlists. |
-| **Response Generation** | `generate_response` | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | Deterministic dispatch by intent key with template string formatting. |
-| **Dashboard Analytics** | `get_dashboard` | $\mathcal{O}(N)$ | $\mathcal{O}(K)$ | Aggregates $N$ recorded messages in memory across $K$ intents. |
-| **Conversation Analysis** | `analyze_conversation` | $\mathcal{O}(N \times m)$ | $\mathcal{O}(U)$ | Traverses student messages to aggregate unique topic keywords $U$. |
+All tests are maintained locally for validation and excluded from the production repository via `.gitignore`.
+
+### Running Python Tests
+```bash
+python -m unittest discover tests -v
+```
+**Results:** **75 tests passing (0 failures)** covering input validation, XSS handling, all 10 core intents, unknown fallbacks, tone classification, multi-turn contexts, session restore, and REST endpoints.
 
 ---
 
-## 11. Installation & Local Execution
-
-### Prerequisites
-- Python 3.10+ installed
-- Pip package manager
-
-### Step 1: Clone or Navigate to Project
-```bash
-cd C:\Users\rosha\EduAssist
-```
-
-### Step 2: Install Minimal Requirements
-```bash
-pip install -r requirements.txt
-```
-*(Only `Flask` and `flask-cors` are required).*
-
-### Step 3: Run the Application
-```bash
-python app.py
-```
-
-### Step 4: Open in Browser
-Navigate to:
-```
-http://127.0.0.1:5000/
-```
-The interface will automatically connect to the Python Flask backend and display `Engine: Flask REST API`.
-
----
-
-## 12. GitHub & GitHub Pages Deployment Guide
-
-EduAssist is structured so that it can be hosted directly on **GitHub Pages** without any backend server requirements:
-
-### Step 1: Initialize Git Repository
-```bash
-git init
-git add .
-git commit -m "Initial commit: Complete EduAssist TSA Chatbot"
-```
-
-### Step 2: Push to GitHub
-```bash
-git remote add origin https://github.com/<your-username>/EduAssist.git
-git branch -M main
-git push -u origin main
-```
-
-### Step 3: Enable GitHub Pages
-1. Go to your repository on GitHub: `https://github.com/<your-username>/EduAssist`.
-2. Click **Settings** &rarr; **Pages** (in the left sidebar under *Code and automation*).
-3. Under **Build and deployment**:
-   - Source: **Deploy from a branch**
-   - Branch: `main`
-   - Folder: `/ (root)` or `/docs` (both work identically!)
-4. Click **Save**.
-5. Within 1-2 minutes, your live demo will be published at:
-   ```
-   https://<your-username>.github.io/EduAssist/
-   ```
-
-When visited via GitHub Pages, EduAssist automatically detects the static environment, displays the blue `Client TSA Engine (Demo)` badge, and executes text preprocessing, intent detection, confidence estimation, and analytics entirely inside the browser with zero network lag and 0% chance of backend failure.
-
----
-
-## 13. Automated Test Suite
-
-EduAssist includes 35 comprehensive automated tests covering:
-- Unit tests for preprocessing, tokenization, stop-word elimination, and validation.
-- Positive tests for all 10 intent categories.
-- Negative tests for empty strings, whitespace, excessively long inputs, and unknown queries.
-- Rule-based tone detection for positive, neutral, concerned, and frustrated messages.
-- Conversational context transitions (`awaiting_subject` &rarr; subject advice).
-- REST API integration tests for all routes, JSON structures, error codes (400, 404), and state lifecycle.
-
-### Running Tests
-```bash
-python -m unittest discover tests
-```
-
-### Test Output
-```text
-...................................
-----------------------------------------------------------------------
-Ran 35 tests in 0.022s
-
-OK
-```
-
----
-
-## 14. Project Directory Structure
+## 13. Project Directory Structure
 
 ```text
 EduAssist/
 │
-├── app.py                      # Flask Application entry point (serves REST API & Web UI)
-├── requirements.txt            # Minimal Python dependencies (Flask, flask-cors)
-├── README.md                   # Comprehensive academic documentation & architecture
-├── .gitignore                  # Git ignore rules
-├── index.html                  # Standalone Web UI (GitHub Pages root entry point)
+├── app.py                      # Flask application entry point & REST API router
+├── requirements.txt            # Minimal dependencies (Flask, flask-cors)
+├── README.md                   # Comprehensive academic documentation & deployment guide
+├── .gitignore                  # Production exclusion rules (tests/, caches, scratch/)
+├── index.html                  # Standalone SPA root entry point (GitHub Pages)
 │
-├── backend/                    # Python Backend Modules (TSA / NLP Logic)
+├── backend/                    # Python Backend TSA / NLP Processing Modules
 │   ├── __init__.py
 │   ├── config.py               # Intent patterns, keywords, tone lexicons, stop words
-│   ├── preprocessor.py         # Text cleaning, normalization, tokenization, keywords
+│   ├── preprocessor.py         # Whitespace normalization, tokenization, keywords
 │   ├── intent_engine.py        # Rule-based intent detection & deterministic confidence
-│   ├── tone_analyzer.py        # Rule-based tone / sentiment analyzer
-│   ├── response_generator.py   # Educational responses, follow-up chips & context
-│   └── state_manager.py        # In-memory runtime session state & analytics
+│   ├── tone_analyzer.py        # Rule-based emotional tone / sentiment analyzer
+│   ├── response_generator.py   # Educational guidance, follow-up chips & context
+│   └── state_manager.py        # Thread-safe in-memory session state & RLock backups
 │
-├── static/                     # Web Application Assets (served by Flask)
+├── static/                     # Primary Web Application Bundle (served by Flask)
 │   ├── index.html              # Main SPA HTML5 interface
 │   ├── css/
-│   │   ├── styles.css          # Modern educational UI design system
-│   │   └── print.css           # A4-friendly printable conversation report
+│   │   ├── styles.css          # Glassmorphic educational UI design system
+│   │   └── print.css           # A4-friendly printable conversation transcript
 │   └── js/
-│       ├── app.js              # UI controller, DOM events, chat bubbles, modals
-│       ├── api_client.js       # Dual-engine API client (Flask REST vs Browser TSA)
-│       └── tsa_engine.js       # Client-side TSA engine (exact parity with Python backend)
+│       ├── app.js              # UI controller, animations, SVG donut, modals
+│       ├── api_client.js       # Dual-engine API client (Flask REST vs Client TSA)
+│       └── tsa_engine.js       # Zero-dependency client-side NLP engine for GitHub Pages
 │
 ├── docs/                       # Pre-configured directory for GitHub Pages /docs source
 │   ├── index.html
 │   ├── css/
 │   └── js/
 │
-├── github-pages/               # Standalone static distribution package
-│   ├── index.html
-│   ├── css/
-│   └── js/
-│
-└── tests/                      # Automated Test Suite
-    ├── __init__.py
-    ├── test_nlp.py             # NLP & rule-based text analysis unit tests
-    └── test_api.py             # Flask REST API integration & validation tests
+└── github-pages/               # Standalone static distribution package
+    ├── index.html
+    ├── css/
+    └── js/
 ```
 
 ---
 
-## 15. Limitations & Future Scope
+## 14. Academic Integrity & Disclosure
 
-### Current Limitations
-- **Lexical Rule-Based Intent Detection:** Categorization is bounded by predefined academic keyword and phrase patterns; nuanced idiomatic expressions or domain metaphors outside the lexical knowledge base yield an `unknown` fallback.
-- **In-Memory Session Persistence:** Conversation state is maintained in runtime memory for simplicity; restarting the server or refreshing static storage clears non-exported history.
-- **Single Institutional Scope:** Attendance rules, credits, and GPA guidelines represent standard collegiate guidelines rather than live synchronization with a specific college SIS.
-
-### Future Scope
-- **Statistical / ML Intent Classification:** Integrating TF-IDF vectorization with Logistic Regression or SVM trained on student support corpora.
-- **Multilingual Support:** Implementing Indic language preprocessing (Hindi, Tamil, Telugu, etc.) for regional collegiate support.
-- **Voice Ingestion & Synthesis:** Integrating Web Speech API / TTS for voice-enabled student guidance.
-- **Campus Portal Integration:** Secure OAuth-based connection to college ERPs for real-time individualized attendance percentages and exam timetable retrieval.
+This project was developed for a college-level **Text, Speech and Analysis (TSA)** mini-project.
+- All text processing, tokenization, intent matching, tone estimation, and confidence calculation algorithms are implemented via **transparent, deterministic, rule-based logic**.
+- The system does not utilize external generative AI APIs (such as OpenAI, Gemini, or Claude) or third-party cloud database providers.
+- The dual-engine architecture transparently indicates whether the active computation is performed by the Python Flask REST API or the client-side JavaScript engine.
 
 ---
 
-## 16. Academic Integrity & Disclosure
+## 15. License
 
-This project was built for a college-level **Text, Speech and Analysis (TSA)** course mini-project.
-- All text processing, tokenization, intent matching, tone estimation, and confidence calculation algorithms are implemented via **transparent, deterministic, rule-based logic**.
-- The system does not utilize external generative AI APIs (such as OpenAI, Gemini, or Claude) or third-party cloud database providers.
-- The dual-engine architecture transparently displays whether the active computation is performed by the Python Flask REST API or the client-side JavaScript engine.
+This project is licensed under the **MIT License**. Feel free to use, modify, and distribute for educational purposes.
