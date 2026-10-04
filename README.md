@@ -3,7 +3,7 @@
 > **Tagline:** *Ask. Understand. Get Guidance.*  
 > **Domain:** Text, Speech and Analysis (TSA) / Natural Language Processing  
 > **Academic Level:** Undergraduate Mini-Project  
-> **Live GitHub Pages URL:** [https://chiragroshan18.github.io/EduAssist/](https://chiragroshan18.github.io/EduAssist/)
+
 
 [![GitHub Pages Deployment](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen?style=for-the-badge&logo=github)](https://chiragroshan18.github.io/EduAssist/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)](https://www.python.org/)
